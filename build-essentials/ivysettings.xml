@@ -70,7 +70,7 @@
         <module organisation="com.ca.dvs"                   resolver="local-repo" />
 	    
         <!-- org.raml#raml-parser can only be found on the mulesoft repository -->
-        <module organisation="org.raml"                                                              resolver="mulesoft-public" />
+<!--        <module organisation="org.raml"                                                              resolver="mulesoft-public" /> -->
 
         <!-- odata4j-0.7.0 depends on eclipselink-2.1.2, but maven central doesn't have it.  Article indicates that we should get it from the eclipselink repository instead -->
         <module organisation="org.eclipse.persistence" name="eclipselink"                            resolver="eclipselink-repo" />

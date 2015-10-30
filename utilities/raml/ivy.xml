@@ -33,7 +33,7 @@
 		for test-only dependencies there should be "test" before the arrow. -->
     <dependency org="log4j" name="log4j" rev="${ivy.rev.apache.log4j}" conf="default" />
 
-    <dependency org="org.raml"                          name="raml-parser"               rev="0.9-SNAPSHOT" conf="default" />
+    <dependency org="org.raml"                          name="raml-parser"               rev="0.8.+"        conf="default" />
     <dependency org="com.google.code.gson"              name="gson"                      rev="2.3"          conf="default" />
 
     <dependency org="com.github.fge"                    name="btf"                       rev="1.2"          conf="default" />
