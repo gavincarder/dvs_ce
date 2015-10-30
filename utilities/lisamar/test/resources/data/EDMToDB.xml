@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Schema Namespace="Test" Version="1.0" Alias="Test">
+
+<EnumType Name="Color">
+    <Member Name="Red" Value="10" />
+    <Member Name="Green" />
+    <Member Name="Blue" />
+</EnumType>
+
+<EnumType Name="AccessLevel" IsFlags="true">
+    <Member Name="None" />
+    <Member Name="Read" />
+    <Member Name="Write" Value="10" />
+    <Member Name="Execute"/>
+    <Member Name="ReadWrite"/>
+</EnumType>
+
+<EnumType Name="AssetClass" UnderlyingType="Edm.String">
+     <Member Name="Desktop PC" Value="10"/>
+     <Member Name="Laptop" />
+     <Member Name="Storage" />
+     <Member Name="Software" />
+     <Member Name="Miscellaneous" />
+</EnumType>
+
+<EnumType Name="PersonGender">
+    <Member Name="Male" Value="0" />
+    <Member Name="Female" Value="1" />
+    <Member Name="Unknown" Value="2" />
+</EnumType>
+
+<ComplexType Name="City">
+    <Property Name="CountryRegion" Type="Edm.String" Nullable="false" />
+    <Property Name="Name" Type="Edm.String" Nullable="false" />
+    <Property Name="Region" Type="Edm.String" Nullable="false" />
+</ComplexType>
+
+<ComplexType Name="Location" OpenType="true">
+    <Property Name="Address" Type="Edm.String" Nullable="false" />
+    <Property Name="City" Type="Test.City" Nullable="false" />
+</ComplexType>
+
+<EntityType Name="Brewer" DBTable="BREWER" CustomPropertiesEnabled="true" CustomPropertiesName="CustomProperties" >
+ 	<Property Name="Id" Type="Edm.String" Length="64" DBColumn="ID" Key="true" Generated="Once" GenMethod="Sequence" GenPattern="BREWER%04d"/>
+	<Property Name="Name" Type="Edm.String" Length="255" DBColumn="NAME"/>
+	<Property Name="Description" Type="Edm.String" Length="255" DBColumn="DESCRIPTION"/>
+	<Property Name="creationTimeStamp" Type="Edm.DateTime" Generated="Once" GenMethod="Init" DefaultValue="CURRENT_TIMESTAMP"/>
+	<Property Name="initTimeStamp" Type="Edm.DateTime" DefaultValue="'2014-11-10 10:32:02.56'"/>
+	<Property Name="creator" Type="Edm.String" Length="255" DefaultValue="'casd'"/>
+	<Property Name="creatorID" Type="Edm.Int32" DefaultValue="10"/>
+	<NavigationProperty Name="Beers" Type="Beer" Relationship="Brewer_Beer" Multiplicity="*" />
+</EntityType>
+
+<EntityType Name="Beer" DBTable="BEER">
+ 	<Property Name="Id" Type="Edm.String" Length="64" DBColumn="ID" Key="true" Generated="Once" />
+	<Property Name="Brewer_Id" Type="Edm.String" Length="64" DBColumn="BREWER_ID"/>
+	<Property Name="Name" Type="Edm.String" Length="255" DBColumn="NAME"/>
+	<Property Name="Type" Type="Edm.String" Length="255" DBColumn="TYPE"/>
+	<Property Name="ABV" Type="Edm.Double" Length="8" DBColumn="ABV"/>
+	<Property Name="Serving" Type="Edm.String" Length="255" DBColumn="SERVING"/>
+	<Property Name="Price" Type="Edm.Double" Length="8" DBColumn="PRICE"/>
+	<Property Name="Description" Type="Edm.String" Length="512" DBColumn="DESCRIPTION"/>
+	<NavigationProperty Name="Brewer" Type="Brewer" Relationship="Brewer_Beer" Multiplicity="0..1" />
+	<NavigationProperty Name="Comments" Type="Comment" Relationship="Beer_Comment" Multiplicity="*" />
+</EntityType>
+
+<EntityType Name="Comment" DBTable="COMMENT">
+ 	<Property Name="Id" Type="Edm.String" Length="64" DBColumn="ID" Key="true"/>
+	<Property Name="Reference_Resource_Id" Type="Edm.String" Length="64" DBColumn="REFERENCED_RESOURCE_ID"/>
+	<Property Name="Commenter_Name" Type="Edm.String" Length="255" DBColumn="COMMENTER_NAME"/>
+	<Property Name="Commenter_EMail" Type="Edm.String" Length="255" DBColumn="COMMENTER_EMAIL"/>
+	<Property Name="Comment" Type="Edm.String" Length="255" DBColumn="COMMENT"/>
+	<NavigationProperty Name="Beer" Type="Beer"  Relationship="Beer_Comment" Multiplicity="0..1" />
+</EntityType>
+
+<EntityType Name="Student" CustomPropertiesEnabled="true" >
+  	<Property Name="id" Key="true" Type="Edm.String" Length="2048"/>
+  	<Property Name="firstname" Type="Edm.String" Length="2048"/>
+  	<Property Name="lastname" Type="Edm.String" Length="2048"/>
+    <Property Name="Emails" Type="Collection(Edm.String)"/>
+    <Property Name="AddressInfo" Type="Test.Location"/>
+    <Property Name="Gender" Type="Test.PersonGender"/>
+  	<NavigationProperty Name="Classes" Type="Class"  Relationship="Student_Class" Multiplicity="*"/>
+</EntityType>
+
+<EntityType Name="Class">
+  	<Property Name="id" Key="true" Type="Edm.String" Length="2048"/>
+  	<Property Name="name" Type="Edm.String" Length="2048"/>
+  	<Property Name="desciption" DBColumn="DESC" Type="Edm.String" Length="2048"/>
+	<Property Name="assetClass" Type="Test.AssetClass"  Length="64" />  <!-- Use to test string type Enumerated Values -->
+	<Property Name="classroomColor" Type="Color" DefaultValue="'Red'"/>
+  <NavigationProperty Name="Students" Type="Student" Relationship="Student_Class" Multiplicity="*"/>
+</EntityType>
+
+<EntityType Name="signup">
+  	<Property Name="student_id" Key="true" Type="Edm.String" Length="2048"/>
+  	<Property Name="class_id" Key="true" Type="Edm.String" Length="2048"/>
+</EntityType>
+ 
+<!-- m2m Entity Type-->
+<EntityType Name="User" DBTable="USER">
+ 	<Property Name="UserId" Type="Edm.String" Length="16" DBColumn="USER_ID" Key="true"/>
+	<Property Name="UserName" Type="Edm.String" Length="2048" DBColumn="USER_NAME"/>
+	<Property Name="UserTitle" Type="Edm.String" Length="32" DBColumn="USER_TITLE"/>
+	
+	<NavigationProperty Name="Groups" Type="UserGroup" Relationship="UserGroupXref" Multiplicity="*" />
+	<NavigationProperty Name="CreatedAssets" Type="Asset" Relationship="AssetCreatorRel" Multiplicity="*" />
+	<NavigationProperty Name="OwnedAssets" Type="Asset" Relationship="AssetOwnerRel" Multiplicity="*" />
+	<NavigationProperty Name="Supervisor" Type="User" Relationship="SupervisorEmployee" Multiplicity="0..1" />
+	<NavigationProperty Name="Employees" Type="User" Relationship="EmployeeSupervisor" Multiplicity="*" />
+</EntityType>
+
+<EntityType Name="UserGroup" DBTable="USERGROUP">
+ 	<Property Name="UserGroupName" Type="Edm.String" Length="64" DBColumn="USERGROUP_ID" Key="true"/>
+	<Property Name="UserGroupDesc" Type="Edm.String" Length="1024" DBColumn="USERGROUP_DESC"/>
+	<NavigationProperty Name="Users" Type="User" Relationship="UserGroupXref" Multiplicity="*" />
+</EntityType>
+
+<EntityType Name="UserGroupAssociation" DBTable="USER_GROUP_ASSOCIATION">
+	<Property Name="UserId" Type="Edm.String" Length="1024" DBColumn="USER_ID" Key="true"/>
+ 	<Property Name="UserGroupName" Type="Edm.String" Length="64" DBColumn="USERGROUP_ID" Key="true"/>
+</EntityType>
+
+<EntityType Name="Organization">
+	<Property Name="Supervisor" Type="Edm.String" Length="16" Key="true"/>
+ 	<Property Name="Employee" Type="Edm.String" Length="16" Key="true"/>
+</EntityType>
+
+<EntityType Name="Asset" DBTable="ASSET">
+	<Property Name="AssetID" Type="Edm.String" Length="64" DBColumn="ASSET_ID" Key="true"/>
+	<Property Name="AssetDesc" Type="Edm.String" Length="1024" DBColumn="ASSET_DESC" />
+ 	<Property Name="AssetCreator" Type="Edm.String" Length="16" DBColumn="ASSET_CREATOR"/>
+	<Property Name="AssetOwner" Type="Edm.String" Length="16" DBColumn="ASSET_OWNER"/>
+	<Property Name="ParentAssetID" Type="Edm.String" Length="64"/>
+	
+	<NavigationProperty Name="Creator" Type="User" Relationship="AssetCreatorRel" Multiplicity="0..1" />
+	<NavigationProperty Name="Owner" Type="User" Relationship="AssetOwnerRel" Multiplicity="0..1" />
+	<NavigationProperty Name="ParentAsset" Type="Asset" Relationship="ParentAssetRel" Multiplicity="0..1" />
+</EntityType> 
+<!-- End of m2m Entity Type-->
+ 
+<EntitySet Name="Brewers" EntityType="Brewer" />
+<EntitySet Name="Beers" EntityType="Beer" />
+<EntitySet Name="Comments" EntityType="Comment" />
+<EntitySet Name="Students" EntityType="Student" />
+<EntitySet Name="Classes" EntityType="Class" />
+
+<!-- m2m -->
+<EntitySet Name="Users" EntityType="User" />
+<EntitySet Name="UserGroups" EntityType="UserGroup" />
+<EntitySet Name="Assets" EntityType="Asset" />
+
+<Association Name="Brewer_Beer" DBLinkTable="BEER" DBJoinOn="BEER.BREWER_ID=BREWER.ID">
+</Association>
+<Association Name="Beer_Comment" DBLinkTable="COMMENT" DBJoinOn="COMMENT.REFERENCED_RESOURCE_ID=BEER.ID">
+</Association>
+<Association Name="Student_Class" DBLinkTable="SIGNUP" DBJoinOn="STUDENT.ID=SIGNUP.STUDENT_ID,CLASS.ID=SIGNUP.CLASS_ID">
+</Association>
+
+<!-- m2m -->
+<Association Name="UserGroupXref" DBLinkTable="USER_GROUP_ASSOCIATION" DBJoinOn="USER.USER_ID=USER_GROUP_ASSOCIATION.USER_ID,USERGROUP.USERGROUP_ID=USER_GROUP_ASSOCIATION.USERGROUP_ID">
+</Association>
+<Association Name="AssetCreatorRel" DBLinkTable="ASSET" DBJoinOn="ASSET.ASSET_CREATOR=USER.USER_ID">
+</Association>
+<Association Name="AssetOwnerRel" DBLinkTable="ASSET" DBJoinOn="ASSET.ASSET_OWNER=USER.USER_ID">
+</Association>
+<Association Name="SupervisorEmployee" DBLinkTable="ORGANIZATION" DBJoinOn="USER.USER_ID = ORGANIZATION.EMPLOYEE, USER.USER_ID = ORGANIZATION.SUPERVISOR">
+</Association>
+<Association Name="EmployeeSupervisor" DBLinkTable="ORGANIZATION" DBJoinOn="USER.USER_ID = ORGANIZATION.SUPERVISOR, USER.USER_ID = ORGANIZATION.EMPLOYEE">
+</Association>
+<Association Name="ParentAssetRel" DBLinkTable="ASSET" DBJoinOn="ASSET.PARENTASSETID = ASSET.ASSET_ID">
+</Association>
+
+</Schema>

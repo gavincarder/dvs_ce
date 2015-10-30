@@ -1,0 +1,435 @@
+<?xml version="1.0" ?>
+
+<serviceImage id="8" name="raml_image" created="2015-03-16.12:17:50.123" lastModified="2015-03-16.12:18:52.096" version="8.0.0" buildNumber="8.0.0.1615">
+<n>Title: Home&#10;Text: JUG - Contract-first with RAML&#10;</n>
+<st>
+<t id="11" nd="true">
+<sp>
+<t id="12">
+<rq id="13" op="GET /raml/resources/authors/" tl="EXACT">
+<m>
+<p n="HTTP-Method">GET</p>
+<p n="HTTP-Version">HTTP/1.1</p>
+</m>
+</rq>
+<rs>
+<rp id="14" t="0">
+<m>
+<p n="HTTP-Response-Code">200</p>
+<p n="HTTP-Response-Code-Text">OK</p>
+<p n="Server">LISA/Virtual-Environment-Server</p>
+<p n="Date">{{=httpNow()}}</p>
+<p n="X-Powered-By">LISA/{{=lisaVersionString()}}</p>
+<p n="Content-Type">application/json</p>
+<p n="Content-Length">1697</p>
+</m>
+<bd>{&#10;  &quot;size&quot;: 3,&#10;  &quot;authors&quot;: [&#10;      { &quot;id&quot;: 1, &quot;name&quot;: &quot;J. R. R. Tolkien&quot;, &quot;books&quot;: [&#10;                                                { &quot;id&quot;: 1, &quot;name&quot;: &quot;The Hobbit; or, There and Back Again&quot;, &quot;isbn&quot;: &quot;054792822X&quot;, &quot;author_id&quot;: 1 },&#10;                                                { &quot;id&quot;: 2, &quot;name&quot;: &quot;The Fellowship of the Ring&quot;, &quot;isbn&quot;: &quot;B007978NPG&quot;, &quot;author_id&quot;: 1 }, &#10;                                                { &quot;id&quot;: 3, &quot;name&quot;: &quot;The Two Towers&quot;, &quot;isbn&quot;: &quot;B007978PKY&quot;, &quot;author_id&quot;: 1 }, &#10;                                                { &quot;id&quot;: 4, &quot;name&quot;: &quot;The Return of the King&quot;, &quot;isbn&quot;: &quot;054792819X&quot;, &quot;author_id&quot;: 1 }&#10;                                                ]&#10;      },&#10;      { &quot;id&quot;: 2, &quot;name&quot;: &quot;George Orwell&quot;, &quot;books&quot;: [&#10;                                                { &quot;id&quot;: 5, &quot;name&quot;: &quot;1984&quot;, &quot;isbn&quot;: &quot;0451524934&quot;, &quot;author_id&quot;: 2 },&#10;                                                { &quot;id&quot;: 6, &quot;name&quot;: &quot;Animal Farm: A Fairy Story&quot;, &quot;isbn&quot;: &quot;B003K16PUU&quot;, &quot;author_id&quot;: 2 }&#10;                                                ]&#10;      },&#10;      { &quot;id&quot;: 3, &quot;name&quot;: &quot;Ernest Hemingway&quot;, &quot;books&quot;: [&#10;                                                { &quot;id&quot;: 7, &quot;name&quot;: &quot;The Sun Also Rises&quot;, &quot;isbn&quot;: &quot;0743297334&quot;, &quot;author_id&quot;: 3 },&#10;                                                { &quot;id&quot;: 8, &quot;name&quot;: &quot;For Whom the Bell Tolls&quot;, &quot;isbn&quot;: &quot;0684803356&quot;, &quot;author_id&quot;: 3 },&#10;                                                { &quot;id&quot;: 9, &quot;name&quot;: &quot;The Old Man and the Sea&quot;, &quot;isbn&quot;: &quot;B000FC0SH8&quot;, &quot;author_id&quot;: 3 },&#10;                                                { &quot;id&quot;: 10, &quot;name&quot;: &quot;A Farewell To Arms&quot;, &quot;isbn&quot;: &quot;0684801469&quot;, &quot;author_id&quot;: 3 }&#10;                                                ]&#10;      }&#10;  ]&#10;}&#10;</bd>
+</rp>
+</rs>
+</t>
+</sp>
+<rq id="15" op="GET /raml/resources/authors/" tl="SIGNATURE">
+<m>
+<p n="HTTP-Method">GET</p>
+<p n="HTTP-Version">HTTP/1.1</p>
+</m>
+</rq>
+<rs>
+<rp id="16" t="0">
+<m>
+<p n="HTTP-Response-Code">200</p>
+<p n="HTTP-Response-Code-Text">OK</p>
+<p n="Server">LISA/Virtual-Environment-Server</p>
+<p n="Date">{{=httpNow()}}</p>
+<p n="X-Powered-By">LISA/{{=lisaVersionString()}}</p>
+<p n="Content-Type">application/json</p>
+<p n="Content-Length">1697</p>
+</m>
+<bd>{&#10;  &quot;size&quot;: 3,&#10;  &quot;authors&quot;: [&#10;      { &quot;id&quot;: 1, &quot;name&quot;: &quot;J. R. R. Tolkien&quot;, &quot;books&quot;: [&#10;                                                { &quot;id&quot;: 1, &quot;name&quot;: &quot;The Hobbit; or, There and Back Again&quot;, &quot;isbn&quot;: &quot;054792822X&quot;, &quot;author_id&quot;: 1 },&#10;                                                { &quot;id&quot;: 2, &quot;name&quot;: &quot;The Fellowship of the Ring&quot;, &quot;isbn&quot;: &quot;B007978NPG&quot;, &quot;author_id&quot;: 1 }, &#10;                                                { &quot;id&quot;: 3, &quot;name&quot;: &quot;The Two Towers&quot;, &quot;isbn&quot;: &quot;B007978PKY&quot;, &quot;author_id&quot;: 1 }, &#10;                                                { &quot;id&quot;: 4, &quot;name&quot;: &quot;The Return of the King&quot;, &quot;isbn&quot;: &quot;054792819X&quot;, &quot;author_id&quot;: 1 }&#10;                                                ]&#10;      },&#10;      { &quot;id&quot;: 2, &quot;name&quot;: &quot;George Orwell&quot;, &quot;books&quot;: [&#10;                                                { &quot;id&quot;: 5, &quot;name&quot;: &quot;1984&quot;, &quot;isbn&quot;: &quot;0451524934&quot;, &quot;author_id&quot;: 2 },&#10;                                                { &quot;id&quot;: 6, &quot;name&quot;: &quot;Animal Farm: A Fairy Story&quot;, &quot;isbn&quot;: &quot;B003K16PUU&quot;, &quot;author_id&quot;: 2 }&#10;                                                ]&#10;      },&#10;      { &quot;id&quot;: 3, &quot;name&quot;: &quot;Ernest Hemingway&quot;, &quot;books&quot;: [&#10;                                                { &quot;id&quot;: 7, &quot;name&quot;: &quot;The Sun Also Rises&quot;, &quot;isbn&quot;: &quot;0743297334&quot;, &quot;author_id&quot;: 3 },&#10;                                                { &quot;id&quot;: 8, &quot;name&quot;: &quot;For Whom the Bell Tolls&quot;, &quot;isbn&quot;: &quot;0684803356&quot;, &quot;author_id&quot;: 3 },&#10;                                                { &quot;id&quot;: 9, &quot;name&quot;: &quot;The Old Man and the Sea&quot;, &quot;isbn&quot;: &quot;B000FC0SH8&quot;, &quot;author_id&quot;: 3 },&#10;                                                { &quot;id&quot;: 10, &quot;name&quot;: &quot;A Farewell To Arms&quot;, &quot;isbn&quot;: &quot;0684801469&quot;, &quot;author_id&quot;: 3 }&#10;                                                ]&#10;      }&#10;  ]&#10;}&#10;</bd>
+</rp>
+</rs>
+</t>
+<t id="17" nd="true">
+<sp>
+<t id="1">
+<rq id="18" op="POST /raml/resources/authors/" tl="EXACT">
+<m>
+<p n="HTTP-Method">POST</p>
+<p n="HTTP-Version">HTTP/1.1</p>
+<p n="Content-Type">application/json</p>
+<p n="Content-Length">649</p>
+</m>
+<bd>{&#10;    &quot;id&quot;: 1, &quot;name&quot;: &quot;J. R. R. Tolkien&quot;, &quot;books&quot;: [&#10;                                                { &quot;id&quot;: 1, &quot;name&quot;: &quot;The Hobbit; or, There and Back Again&quot;, &quot;isbn&quot;: &quot;054792822X&quot;, &quot;author_id&quot;: 1 },&#10;                                                { &quot;id&quot;: 2, &quot;name&quot;: &quot;The Fellowship of the Ring&quot;, &quot;isbn&quot;: &quot;B007978NPG&quot;, &quot;author_id&quot;: 1 }, &#10;                                                { &quot;id&quot;: 3, &quot;name&quot;: &quot;The Two Towers&quot;, &quot;isbn&quot;: &quot;B007978PKY&quot;, &quot;author_id&quot;: 1 }, &#10;                                                { &quot;id&quot;: 4, &quot;name&quot;: &quot;The Return of the King&quot;, &quot;isbn&quot;: &quot;054792819X&quot;, &quot;author_id&quot;: 1 }&#10;                                                ]&#10;}&#10;</bd>
+</rq>
+<rs>
+<rp id="19" t="0">
+<m>
+<p n="HTTP-Response-Code">201</p>
+<p n="HTTP-Response-Code-Text">Created</p>
+<p n="Server">LISA/Virtual-Environment-Server</p>
+<p n="Date">{{=httpNow()}}</p>
+<p n="X-Powered-By">LISA/{{=lisaVersionString()}}</p>
+<p n="Content-Type">application/json</p>
+<p n="Content-Length">6</p>
+</m>
+<bd>author</bd>
+</rp>
+</rs>
+</t>
+</sp>
+<rq id="20" op="POST /raml/resources/authors/" tl="SIGNATURE">
+<m>
+<p n="HTTP-Method">POST</p>
+<p n="HTTP-Version">HTTP/1.1</p>
+<p n="Content-Type">application/json</p>
+<p n="Content-Length">649</p>
+</m>
+<bd>{&#10;    &quot;id&quot;: 1, &quot;name&quot;: &quot;J. R. R. Tolkien&quot;, &quot;books&quot;: [&#10;                                                { &quot;id&quot;: 1, &quot;name&quot;: &quot;The Hobbit; or, There and Back Again&quot;, &quot;isbn&quot;: &quot;054792822X&quot;, &quot;author_id&quot;: 1 },&#10;                                                { &quot;id&quot;: 2, &quot;name&quot;: &quot;The Fellowship of the Ring&quot;, &quot;isbn&quot;: &quot;B007978NPG&quot;, &quot;author_id&quot;: 1 }, &#10;                                                { &quot;id&quot;: 3, &quot;name&quot;: &quot;The Two Towers&quot;, &quot;isbn&quot;: &quot;B007978PKY&quot;, &quot;author_id&quot;: 1 }, &#10;                                                { &quot;id&quot;: 4, &quot;name&quot;: &quot;The Return of the King&quot;, &quot;isbn&quot;: &quot;054792819X&quot;, &quot;author_id&quot;: 1 }&#10;                                                ]&#10;}&#10;</bd>
+</rq>
+<rs>
+<rp id="21" t="0">
+<m>
+<p n="HTTP-Response-Code">201</p>
+<p n="HTTP-Response-Code-Text">Created</p>
+<p n="Server">LISA/Virtual-Environment-Server</p>
+<p n="Date">{{=httpNow()}}</p>
+<p n="X-Powered-By">LISA/{{=lisaVersionString()}}</p>
+<p n="Content-Type">application/json</p>
+<p n="Content-Length">6</p>
+</m>
+<bd>author</bd>
+</rp>
+</rs>
+</t>
+<t id="22" nd="true">
+<sp>
+<t id="2">
+<rq id="23" op="GET /raml/resources/authors/id/{authorId}/" tl="EXACT">
+<ag>
+<p n="authorId" t="arg:EQUALS;false;;;;">1</p>
+</ag>
+<m>
+<p n="HTTP-Method">GET</p>
+<p n="HTTP-Version">HTTP/1.1</p>
+</m>
+</rq>
+<rs>
+<rp id="24" t="0">
+<m>
+<p n="HTTP-Response-Code">200</p>
+<p n="HTTP-Response-Code-Text">OK</p>
+<p n="Server">LISA/Virtual-Environment-Server</p>
+<p n="Date">{{=httpNow()}}</p>
+<p n="X-Powered-By">LISA/{{=lisaVersionString()}}</p>
+<p n="Content-Type">application/json</p>
+<p n="Content-Length">649</p>
+</m>
+<bd>{&#10;    &quot;id&quot;: 1, &quot;name&quot;: &quot;J. R. R. Tolkien&quot;, &quot;books&quot;: [&#10;                                                { &quot;id&quot;: 1, &quot;name&quot;: &quot;The Hobbit; or, There and Back Again&quot;, &quot;isbn&quot;: &quot;054792822X&quot;, &quot;author_id&quot;: 1 },&#10;                                                { &quot;id&quot;: 2, &quot;name&quot;: &quot;The Fellowship of the Ring&quot;, &quot;isbn&quot;: &quot;B007978NPG&quot;, &quot;author_id&quot;: 1 }, &#10;                                                { &quot;id&quot;: 3, &quot;name&quot;: &quot;The Two Towers&quot;, &quot;isbn&quot;: &quot;B007978PKY&quot;, &quot;author_id&quot;: 1 }, &#10;                                                { &quot;id&quot;: 4, &quot;name&quot;: &quot;The Return of the King&quot;, &quot;isbn&quot;: &quot;054792819X&quot;, &quot;author_id&quot;: 1 }&#10;                                                ]&#10;}&#10;</bd>
+</rp>
+</rs>
+</t>
+</sp>
+<rq id="25" op="GET /raml/resources/authors/id/{authorId}/" tl="SIGNATURE">
+<ag>
+<p n="authorId" t="arg:EQUALS;false;;;;">1</p>
+</ag>
+<m>
+<p n="HTTP-Method">GET</p>
+<p n="HTTP-Version">HTTP/1.1</p>
+</m>
+</rq>
+<rs>
+<rp id="26" t="0">
+<m>
+<p n="HTTP-Response-Code">200</p>
+<p n="HTTP-Response-Code-Text">OK</p>
+<p n="Server">LISA/Virtual-Environment-Server</p>
+<p n="Date">{{=httpNow()}}</p>
+<p n="X-Powered-By">LISA/{{=lisaVersionString()}}</p>
+<p n="Content-Type">application/json</p>
+<p n="Content-Length">649</p>
+</m>
+<bd>{&#10;    &quot;id&quot;: 1, &quot;name&quot;: &quot;J. R. R. Tolkien&quot;, &quot;books&quot;: [&#10;                                                { &quot;id&quot;: 1, &quot;name&quot;: &quot;The Hobbit; or, There and Back Again&quot;, &quot;isbn&quot;: &quot;054792822X&quot;, &quot;author_id&quot;: 1 },&#10;                                                { &quot;id&quot;: 2, &quot;name&quot;: &quot;The Fellowship of the Ring&quot;, &quot;isbn&quot;: &quot;B007978NPG&quot;, &quot;author_id&quot;: 1 }, &#10;                                                { &quot;id&quot;: 3, &quot;name&quot;: &quot;The Two Towers&quot;, &quot;isbn&quot;: &quot;B007978PKY&quot;, &quot;author_id&quot;: 1 }, &#10;                                                { &quot;id&quot;: 4, &quot;name&quot;: &quot;The Return of the King&quot;, &quot;isbn&quot;: &quot;054792819X&quot;, &quot;author_id&quot;: 1 }&#10;                                                ]&#10;}&#10;</bd>
+</rp>
+</rs>
+</t>
+<t id="27" nd="true">
+<sp>
+<t id="3">
+<rq id="28" op="POST /raml/resources/authors/id/{authorId}/" tl="EXACT">
+<ag>
+<p n="authorId" t="arg:EQUALS;false;;;;">1</p>
+</ag>
+<m>
+<p n="HTTP-Method">POST</p>
+<p n="HTTP-Version">HTTP/1.1</p>
+<p n="Content-Type">application/json</p>
+<p n="Content-Length">6</p>
+</m>
+<bd>author</bd>
+</rq>
+<rs>
+<rp id="29" t="0">
+<m>
+<p n="HTTP-Response-Code">200</p>
+<p n="HTTP-Response-Code-Text">OK</p>
+<p n="Server">LISA/Virtual-Environment-Server</p>
+<p n="Date">{{=httpNow()}}</p>
+<p n="X-Powered-By">LISA/{{=lisaVersionString()}}</p>
+<p n="Content-Type">application/json</p>
+<p n="Content-Length">6</p>
+</m>
+<bd>author</bd>
+</rp>
+</rs>
+</t>
+</sp>
+<rq id="30" op="POST /raml/resources/authors/id/{authorId}/" tl="SIGNATURE">
+<ag>
+<p n="authorId" t="arg:EQUALS;false;;;;">1</p>
+</ag>
+<m>
+<p n="HTTP-Method">POST</p>
+<p n="HTTP-Version">HTTP/1.1</p>
+<p n="Content-Type">application/json</p>
+<p n="Content-Length">6</p>
+</m>
+<bd>author</bd>
+</rq>
+<rs>
+<rp id="31" t="0">
+<m>
+<p n="HTTP-Response-Code">200</p>
+<p n="HTTP-Response-Code-Text">OK</p>
+<p n="Server">LISA/Virtual-Environment-Server</p>
+<p n="Date">{{=httpNow()}}</p>
+<p n="X-Powered-By">LISA/{{=lisaVersionString()}}</p>
+<p n="Content-Type">application/json</p>
+<p n="Content-Length">6</p>
+</m>
+<bd>author</bd>
+</rp>
+</rs>
+</t>
+<t id="32" nd="true">
+<sp>
+<t id="4">
+<rq id="33" op="DELETE /raml/resources/authors/id/{authorId}/" tl="EXACT">
+<ag>
+<p n="authorId" t="arg:EQUALS;false;;;;">1</p>
+</ag>
+<m>
+<p n="HTTP-Method">DELETE</p>
+<p n="HTTP-Version">HTTP/1.1</p>
+</m>
+</rq>
+<rs>
+<rp id="34" t="0">
+<m>
+<p n="HTTP-Response-Code">200</p>
+<p n="HTTP-Response-Code-Text">OK</p>
+<p n="Server">LISA/Virtual-Environment-Server</p>
+<p n="Date">{{=httpNow()}}</p>
+<p n="X-Powered-By">LISA/{{=lisaVersionString()}}</p>
+</m>
+</rp>
+</rs>
+</t>
+</sp>
+<rq id="35" op="DELETE /raml/resources/authors/id/{authorId}/" tl="SIGNATURE">
+<ag>
+<p n="authorId" t="arg:EQUALS;false;;;;">1</p>
+</ag>
+<m>
+<p n="HTTP-Method">DELETE</p>
+<p n="HTTP-Version">HTTP/1.1</p>
+</m>
+</rq>
+<rs>
+<rp id="36" t="0">
+<m>
+<p n="HTTP-Response-Code">200</p>
+<p n="HTTP-Response-Code-Text">OK</p>
+<p n="Server">LISA/Virtual-Environment-Server</p>
+<p n="Date">{{=httpNow()}}</p>
+<p n="X-Powered-By">LISA/{{=lisaVersionString()}}</p>
+</m>
+</rp>
+</rs>
+</t>
+<t id="37" nd="true">
+<sp>
+<t id="5">
+<rq id="38" op="GET /raml/resources/books/" tl="EXACT">
+<m>
+<p n="HTTP-Method">GET</p>
+<p n="HTTP-Version">HTTP/1.1</p>
+</m>
+</rq>
+<rs>
+<rp id="39" t="0">
+<m>
+<p n="HTTP-Response-Code">200</p>
+<p n="HTTP-Response-Code-Text">OK</p>
+<p n="Server">LISA/Virtual-Environment-Server</p>
+<p n="Date">{{=httpNow()}}</p>
+<p n="X-Powered-By">LISA/{{=lisaVersionString()}}</p>
+<p n="Content-Type">application/json</p>
+<p n="Content-Length">1011</p>
+</m>
+<bd>{&#10;    &quot;size&quot;: 10,&#10;    &quot;books&quot;: [&#10;            { &quot;id&quot;: 1, &quot;name&quot;: &quot;The Hobbit; or, There and Back Again&quot;, &quot;isbn&quot;: &quot;054792822X&quot;, &quot;author_id&quot;: 1 },&#10;            { &quot;id&quot;: 2, &quot;name&quot;: &quot;The Fellowship of the Ring&quot;, &quot;isbn&quot;: &quot;B007978NPG&quot;, &quot;author_id&quot;: 1 }, &#10;            { &quot;id&quot;: 3, &quot;name&quot;: &quot;The Two Towers&quot;, &quot;isbn&quot;: &quot;B007978PKY&quot;, &quot;author_id&quot;: 1 }, &#10;            { &quot;id&quot;: 4, &quot;name&quot;: &quot;The Return of the King&quot;, &quot;isbn&quot;: &quot;054792819X&quot;, &quot;author_id&quot;: 1 },&#10;            { &quot;id&quot;: 5, &quot;name&quot;: &quot;1984&quot;, &quot;isbn&quot;: &quot;0451524934&quot;, &quot;author_id&quot;: 2 },&#10;            { &quot;id&quot;: 6, &quot;name&quot;: &quot;Animal Farm: A Fairy Story&quot;, &quot;isbn&quot;: &quot;B003K16PUU&quot;, &quot;author_id&quot;: 2 },&#10;            { &quot;id&quot;: 7, &quot;name&quot;: &quot;The Sun Also Rises&quot;, &quot;isbn&quot;: &quot;0743297334&quot;, &quot;author_id&quot;: 3 },&#10;            { &quot;id&quot;: 8, &quot;name&quot;: &quot;For Whom the Bell Tolls&quot;, &quot;isbn&quot;: &quot;0684803356&quot;, &quot;author_id&quot;: 3 },&#10;            { &quot;id&quot;: 9, &quot;name&quot;: &quot;The Old Man and the Sea&quot;, &quot;isbn&quot;: &quot;B000FC0SH8&quot;, &quot;author_id&quot;: 3 },&#10;            { &quot;id&quot;: 10, &quot;name&quot;: &quot;A Farewell To Arms&quot;, &quot;isbn&quot;: &quot;0684801469&quot;, &quot;author_id&quot;: 3 }&#10;            ]&#10;}&#10;</bd>
+</rp>
+</rs>
+</t>
+</sp>
+<rq id="40" op="GET /raml/resources/books/" tl="SIGNATURE">
+<m>
+<p n="HTTP-Method">GET</p>
+<p n="HTTP-Version">HTTP/1.1</p>
+</m>
+</rq>
+<rs>
+<rp id="41" t="0">
+<m>
+<p n="HTTP-Response-Code">200</p>
+<p n="HTTP-Response-Code-Text">OK</p>
+<p n="Server">LISA/Virtual-Environment-Server</p>
+<p n="Date">{{=httpNow()}}</p>
+<p n="X-Powered-By">LISA/{{=lisaVersionString()}}</p>
+<p n="Content-Type">application/json</p>
+<p n="Content-Length">1011</p>
+</m>
+<bd>{&#10;    &quot;size&quot;: 10,&#10;    &quot;books&quot;: [&#10;            { &quot;id&quot;: 1, &quot;name&quot;: &quot;The Hobbit; or, There and Back Again&quot;, &quot;isbn&quot;: &quot;054792822X&quot;, &quot;author_id&quot;: 1 },&#10;            { &quot;id&quot;: 2, &quot;name&quot;: &quot;The Fellowship of the Ring&quot;, &quot;isbn&quot;: &quot;B007978NPG&quot;, &quot;author_id&quot;: 1 }, &#10;            { &quot;id&quot;: 3, &quot;name&quot;: &quot;The Two Towers&quot;, &quot;isbn&quot;: &quot;B007978PKY&quot;, &quot;author_id&quot;: 1 }, &#10;            { &quot;id&quot;: 4, &quot;name&quot;: &quot;The Return of the King&quot;, &quot;isbn&quot;: &quot;054792819X&quot;, &quot;author_id&quot;: 1 },&#10;            { &quot;id&quot;: 5, &quot;name&quot;: &quot;1984&quot;, &quot;isbn&quot;: &quot;0451524934&quot;, &quot;author_id&quot;: 2 },&#10;            { &quot;id&quot;: 6, &quot;name&quot;: &quot;Animal Farm: A Fairy Story&quot;, &quot;isbn&quot;: &quot;B003K16PUU&quot;, &quot;author_id&quot;: 2 },&#10;            { &quot;id&quot;: 7, &quot;name&quot;: &quot;The Sun Also Rises&quot;, &quot;isbn&quot;: &quot;0743297334&quot;, &quot;author_id&quot;: 3 },&#10;            { &quot;id&quot;: 8, &quot;name&quot;: &quot;For Whom the Bell Tolls&quot;, &quot;isbn&quot;: &quot;0684803356&quot;, &quot;author_id&quot;: 3 },&#10;            { &quot;id&quot;: 9, &quot;name&quot;: &quot;The Old Man and the Sea&quot;, &quot;isbn&quot;: &quot;B000FC0SH8&quot;, &quot;author_id&quot;: 3 },&#10;            { &quot;id&quot;: 10, &quot;name&quot;: &quot;A Farewell To Arms&quot;, &quot;isbn&quot;: &quot;0684801469&quot;, &quot;author_id&quot;: 3 }&#10;            ]&#10;}&#10;</bd>
+</rp>
+</rs>
+</t>
+<t id="42" nd="true">
+<sp>
+<t id="6">
+<rq id="43" op="POST /raml/resources/books/" tl="EXACT">
+<m>
+<p n="HTTP-Method">POST</p>
+<p n="HTTP-Version">HTTP/1.1</p>
+<p n="Content-Type">application/json</p>
+<p n="Content-Length">100</p>
+</m>
+<bd>{&#10;  &quot;id&quot;: 1, &quot;name&quot;: &quot;The Hobbit; or, There and Back Again&quot;, &quot;isbn&quot;: &quot;054792822X&quot;, &quot;author_id&quot;: 1&#10;}&#10;</bd>
+</rq>
+<rs>
+<rp id="44" t="0">
+<m>
+<p n="HTTP-Response-Code">201</p>
+<p n="HTTP-Response-Code-Text">Created</p>
+<p n="Server">LISA/Virtual-Environment-Server</p>
+<p n="Date">{{=httpNow()}}</p>
+<p n="X-Powered-By">LISA/{{=lisaVersionString()}}</p>
+<p n="Content-Type">application/json</p>
+<p n="Content-Length">4</p>
+</m>
+<bd>book</bd>
+</rp>
+</rs>
+</t>
+</sp>
+<rq id="45" op="POST /raml/resources/books/" tl="SIGNATURE">
+<m>
+<p n="HTTP-Method">POST</p>
+<p n="HTTP-Version">HTTP/1.1</p>
+<p n="Content-Type">application/json</p>
+<p n="Content-Length">100</p>
+</m>
+<bd>{&#10;  &quot;id&quot;: 1, &quot;name&quot;: &quot;The Hobbit; or, There and Back Again&quot;, &quot;isbn&quot;: &quot;054792822X&quot;, &quot;author_id&quot;: 1&#10;}&#10;</bd>
+</rq>
+<rs>
+<rp id="46" t="0">
+<m>
+<p n="HTTP-Response-Code">201</p>
+<p n="HTTP-Response-Code-Text">Created</p>
+<p n="Server">LISA/Virtual-Environment-Server</p>
+<p n="Date">{{=httpNow()}}</p>
+<p n="X-Powered-By">LISA/{{=lisaVersionString()}}</p>
+<p n="Content-Type">application/json</p>
+<p n="Content-Length">4</p>
+</m>
+<bd>book</bd>
+</rp>
+</rs>
+</t>
+<t id="47" nd="true">
+<sp>
+<t id="7">
+<rq id="48" op="GET /raml/resources/books/id/{bookId}/" tl="EXACT">
+<ag>
+<p n="bookId" t="arg:EQUALS;false;;;;">1</p>
+</ag>
+<m>
+<p n="HTTP-Method">GET</p>
+<p n="HTTP-Version">HTTP/1.1</p>
+</m>
+</rq>
+<rs>
+<rp id="49" t="0">
+<m>
+<p n="HTTP-Response-Code">200</p>
+<p n="HTTP-Response-Code-Text">OK</p>
+<p n="Server">LISA/Virtual-Environment-Server</p>
+<p n="Date">{{=httpNow()}}</p>
+<p n="X-Powered-By">LISA/{{=lisaVersionString()}}</p>
+<p n="Content-Type">application/json</p>
+<p n="Content-Length">100</p>
+</m>
+<bd>{&#10;  &quot;id&quot;: 1, &quot;name&quot;: &quot;The Hobbit; or, There and Back Again&quot;, &quot;isbn&quot;: &quot;054792822X&quot;, &quot;author_id&quot;: 1&#10;}&#10;</bd>
+</rp>
+</rs>
+</t>
+</sp>
+<rq id="50" op="GET /raml/resources/books/id/{bookId}/" tl="SIGNATURE">
+<ag>
+<p n="bookId" t="arg:EQUALS;false;;;;">1</p>
+</ag>
+<m>
+<p n="HTTP-Method">GET</p>
+<p n="HTTP-Version">HTTP/1.1</p>
+</m>
+</rq>
+<rs>
+<rp id="51" t="0">
+<m>
+<p n="HTTP-Response-Code">200</p>
+<p n="HTTP-Response-Code-Text">OK</p>
+<p n="Server">LISA/Virtual-Environment-Server</p>
+<p n="Date">{{=httpNow()}}</p>
+<p n="X-Powered-By">LISA/{{=lisaVersionString()}}</p>
+<p n="Content-Type">application/json</p>
+<p n="Content-Length">100</p>
+</m>
+<bd>{&#10;  &quot;id&quot;: 1, &quot;name&quot;: &quot;The Hobbit; or, There and Back Again&quot;, &quot;isbn&quot;: &quot;054792822X&quot;, &quot;author_id&quot;: 1&#10;}&#10;</bd>
+</rp>
+</rs>
+</t>
+</st>
+<ucrr>
+<rp id="10" t="0">
+<m>
+<p n="HTTP-Response-Code">200</p>
+<p n="HTTP-Response-Code-Text">OK</p>
+<p n="Server">LISA/Virtual-Environment-Server</p>
+<p n="Date">{{=httpNow()}}</p>
+<p n="X-Powered-By">LISA/{{=lisaVersionString()}}</p>
+</m>
+</rp>
+</ucrr>
+<usrr>
+<rp id="9" t="0">
+<m>
+<p n="HTTP-Response-Code">404</p>
+<p n="HTTP-Response-Code-Text">Not Found</p>
+<p n="Server">LISA/Virtual-Environment-Server</p>
+<p n="Date">{{=httpNow()}}</p>
+<p n="X-Powered-By">LISA/{{=lisaVersionString()}}</p>
+<p n="Content-Type">text/html</p>
+</m>
+<bd>&lt;html&gt;&lt;head&gt;&lt;title&gt;404 Not Found&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&lt;h1&gt;Not Found&lt;/h1&gt;The requested URL was not found on this server.&lt;p&gt;&lt;hr&gt;&lt;p&gt;&lt;i&gt;The DevTest VSE service could not match your request to a recorded request.&amp;nbsp; Consider expanding your service image.&lt;/i&gt;&lt;br&gt;&lt;font size=&quot;-2&quot;&gt;Produced by a DevTest virtualized web server.&lt;/font&gt;&lt;/body&gt;&lt;/html&gt;</bd>
+</rp>
+</usrr>
+</serviceImage>

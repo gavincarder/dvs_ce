@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="dvs-setup" basedir="." default="all"
+        xmlns:ivy="antlib:org.apache.ivy.ant"
+        xmlns:antcontrib="antlib:net.sf.antcontrib"
+>
+
+    <property environment="env" />
+    <available file="${env.ANT_HOME}" property="ant_home-defined" />
+    <fail unless="ant_home-defined" message="ANT_HOME was not defined or does not exist" />
+
+    <target name="_init">
+        <get dest="${env.ANT_HOME}/lib/ant-contrib-1.0b3.jar" src="http://search.maven.org/remotecontent?filepath=ant-contrib/ant-contrib/1.0b3/ant-contrib-1.0b3.jar" usetimestamp="true"/>
+        <get dest="${env.ANT_HOME}/lib/ivy-2.4.0.jar" src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.4.0/ivy-2.4.0.jar" usetimestamp="true"/>
+    </target>
+    
+    <target name="install-antlibs" description="Install ANT libs" depends="_init">
+        <path id="ivy.lib.path">
+            <fileset dir="${env.ANT_HOME}/lib" includes="ivy*.jar"/>
+        </path>
+        
+        <taskdef resource="org/apache/ivy/ant/antlib.xml"
+                 uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+                 
+        <ivy:settings file="build-essentials\ivysettings.xml"/>
+        
+        <ivy:resolve conf="build" />
+        <ivy:retrieve conf="build" pattern="${env.ANT_HOME}\lib\[artifact].[ext]" />
+    </target>
+    
+	<target name="all" description="Install build dependencies" depends="install-antlibs">
+
+	</target>   
+  
+</project>
+

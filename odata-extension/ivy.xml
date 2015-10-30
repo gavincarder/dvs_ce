@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE IvyModule>
+<?xml-stylesheet type="text/xsl" href="../../ivy-doc.xsl"?>
+<ivy-module version="1.0" xmlns:e="http://ant.apache.org/ivy/extra"
+            xmlns:m="http://ant.apache.org/ivy/maven">
+
+	<!-- Information about your component. Keep casd. prefix. -->
+  <info organisation="com.ca.dvs" module="dvs.lisa-extensions.odata">
+  	<extends organisation="com.ca.dvs" module="dvs.build-essentials" revision="latest.integration"
+  		location="../build-essentials/ivy-common.xml" />
+  </info>
+  
+  <publications>
+    <artifact type="pom" ext="pom" conf="default"/>
+    <artifact name="dvs.lisa-extensions.odata-install" type="resource" ext="zip" conf="default" m:classifier="install"/>
+  </publications>
+
+  <dependencies>
+
+    <!-- DDME runtime dependencies -->
+	<dependency org="org.eobjects.metamodel"           name="MetaModel-core"       rev="${ivy.rev.org.eobjects.metamodel}"             conf="runtime->default"/>
+	<dependency org="org.eobjects.metamodel"           name="MetaModel-full"       rev="${ivy.rev.org.eobjects.metamodel}"             conf="runtime->default">
+		<exclude name="MetaModel-access" />
+			<exclude name="jackcess" />
+		<exclude name="MetaModel-couchdb" />
+			<exclude name="jackson-core-asl" />
+			<exclude name="jackson-mapper-asl" />
+			<exclude name="jcl-over-slf4j" />
+			<exclude name="org.ektorp" />			
+		<exclude name="MetaModel-csv" />
+			<exclude name="opencsv" />
+		<exclude name="MetaModel-dbase" />
+		<exclude name="MetaModel-fixedwidth" />
+		<exclude name="MetaModel-mongodb" />
+			<exclude name="mongo-java-driver" />
+		<exclude name="MetaModel-openoffice" />
+			<exclude name="hsqldb" />
+		<exclude name="MetaModel-pojo" />
+		<exclude name="MetaModel-salesforce" />
+			<exclude name="force-partner-api" />
+			<exclude name="force-wsc" />
+		<exclude name="MetaModel-sugarcrm" />
+		<exclude name="MetaModel-xml" />
+	</dependency>
+
+	<!-- MetaModel runtime dependency for execl and Jdbc, pulled by MetaModel-full -->
+	<dependency org="org.eobjects.metamodel"           name="MetaModel-excel"      rev="${ivy.rev.org.eobjects.metamodel}"             conf="runtime->default"/>
+	<dependency org="org.eobjects.metamodel"           name="MetaModel-jdbc"       rev="${ivy.rev.org.eobjects.metamodel}"             conf="runtime->default"/>
+    
+	<!-- Java API to access Microsoft Format Files, pulled by MetaModel-full(MetaModel-execl runtime dependency) -->
+	<dependency org="org.apache.poi"                   name="poi"                  rev="${ivy.rev.apache.poi}"                         conf="runtime->default"/> 
+	<dependency org="org.apache.poi"                   name="poi-ooxml"            rev="${ivy.rev.apache.poi}"                         conf="runtime->default"/> 
+	<dependency org="org.apache.poi"                   name="poi-ooxml-schemas"    rev="${ivy.rev.apache.poi}"                         conf="runtime->default"/>
+	
+	<!-- MetaModel runtime dependency, pulled by MetaModel-full -->
+	<dependency org="commons-codec"                    name="commons-codec"        rev="${ivy.rev.apache.commons-codec}"               conf="runtime->default" /> 
+	<dependency org="commons-io"                       name="commons-io"           rev="${ivy.rev.apache.commons-io}"                  conf="runtime->default" /> 
+	<dependency org="commons-lang"                     name="commons-lang"         rev="${ivy.rev.apache.commons-lang}"                conf="runtime->default" />
+	<dependency org="commons-pool"                     name="commons-pool"         rev="${ivy.rev.apache.commons-pool}"                conf="runtime->default" />
+	
+	<dependency org="com.h2database"                   name="h2"                   rev="${ivy.rev.com.h2database}"                     conf="runtime->default" /> <!-- H2 database -->	
+
+    <!-- ODATA runtime dependencies -->
+    <dependency org="org.apache.commons"    name="commons-lang3"                rev="3.3.2"                         conf="runtime->default" />
+    <dependency org="log4j"                 name="log4j"                        rev="${ivy.rev.apache.log4j}"       conf="runtime->default" /> 
+
+    <dependency org="org.odata4j"           name="odata4j-core"                 rev="0.7.0"                         conf="runtime->default" /> 
+
+    <dependency org="com.google.code.gson"  name="gson"                         rev="2.3"                           conf="runtime->default" />
+    
+    <dependency org="org.codehaus.jettison" name="jettison"                     rev="1.3.2"                         conf="runtime->default" /> 
+    
+    <dependency org="org.antlr"             name="antlr4-runtime"               rev="4.1"                           conf="runtime->default" />
+    
+    <dependency org="org.apache.olingo"     name="odata-server-api"             rev="4.0.0-beta-02"                 conf="runtime->default"  />   
+    <dependency org="org.apache.olingo"     name="odata-server-core"            rev="4.0.0-beta-02"                 conf="runtime->default" />
+    <dependency org="org.apache.olingo"     name="odata-commons-api"            rev="4.0.0-beta-02"                 conf="runtime->default" />   
+    <dependency org="org.apache.olingo"     name="odata-commons-core"           rev="4.0.0-beta-02"                 conf="runtime->default" />
+     
+  </dependencies>
+  
+</ivy-module>

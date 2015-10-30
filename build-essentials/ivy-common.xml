@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ivy-module version="1.0">
+
+  <info organisation="com.ca.dvs" module="dvs.build-essentials">
+  	<license name="CA technologies proprietary" />
+  </info>
+
+  <configurations>
+    <conf name="default" description="Libraries that are required for both compilation and need to be deployed for runtime" />
+    <conf name="compile" extends="default" description="Libraries that are required for compilation, but should not be deployed for runtime, since they are then coming from elsewhere (e.g. are deployed to common/lib)" />
+    <conf name="runtime" extends="default" description="Libraries that are required for runtime only, not needed for compilation"/>
+    <conf name="test" extends="compile,runtime" />
+    <conf name="lgpl" description="LGPL libraries that need to be installed on a separate disk, put them to the lgpl configuration in addition to the usual one you need. They will be installed separately, will end up on a second installation disk."/>
+    <conf name="install" />
+    <conf name="install-lgpl" />
+    <conf name="osgi" description="Dependencies that should be packaged inside the OSGi bundle jar file." />
+  </configurations>
+
+  <publications>
+  </publications>
+
+  <dependencies>
+  </dependencies>
+  
+</ivy-module>

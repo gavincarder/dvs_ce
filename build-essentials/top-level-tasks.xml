@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<project name="top-level-tasks">
+
+    <import file="${basedir}/build-essentials/buildCommon.xml" />
+
+	<target name="clean" description="Cleans the content of the build directories.">
+		<ant antfile="${basedir}/build-essentials/build.xml" dir="${basedir}/build-essentials" inheritAll="false" target="clean">
+			<property name="ant-filters" value="${ant-filters}" />
+		</ant>
+	</target>
+	<target name="this.build" > <!-- description="Compiles the java sources (not unit tests)." -->
+		<ant antfile="${basedir}/build-essentials/build.xml" dir="${basedir}/build-essentials" inheritAll="false" target="this.build">
+			<property name="ant-filters" value="${ant-filters}" />
+		</ant>
+	</target>
+	<target name="test" description="Runs unit tests.">
+		<ant antfile="${basedir}/build-essentials/build.xml" dir="${basedir}/build-essentials" inheritAll="false" target="test">
+			<property name="ant-filters" value="${ant-filters}" />
+			<property name="is.skip.test" value="${is.skip.test}" />
+		</ant>
+	</target>
+	<target name="doc" description="Runs documentation generation.">
+			<ant antfile="${basedir}/build-essentials/build.xml" dir="${basedir}/build-essentials" inheritAll="false" target="doc">
+				<property name="ant-filters" value="${ant-filters}" />
+				<property name="is.skip.doc" value="${is.skip.doc}" />
+			</ant>
+		</target>
+	
+	<target name="package" description="Expects that the project was already compiled. Creates artifacts in build/artifacts folder to make them ready for publishing or deployment.">
+		<ant antfile="${basedir}/build-essentials/build.xml" dir="${basedir}/build-essentials" inheritAll="false" target="package">
+			<property name="ant-filters" value="${ant-filters}" />
+		</ant>
+	</target>
+	<target name="publish" description="Publishes the artifacts produced by the build to local Ivy repository.">
+		<ant antfile="${basedir}/build-essentials/build.xml" dir="${basedir}/build-essentials" inheritAll="false" target="publish">
+			<property name="ant-filters" value="${ant-filters}" />
+		</ant>
+	</target>
+	<target name="deploy" description="Deploy project artifacts to a local/remote machine.">
+		<ant antfile="${basedir}/build-essentials/build.xml" dir="${basedir}/build-essentials" inheritAll="false" target="deploy">
+			<property name="ant-filters" value="${ant-filters}" />
+		</ant>
+	</target>
+	<target name="check-deploy-result" description="Check deploy result for specific host.">
+		<ant antfile="${basedir}/build-essentials/build.xml" dir="${basedir}/build-essentials" inheritAll="false" target="check-deploy-result">
+			<property name="ant-filters" value="${ant-filters}" />
+		</ant>
+	</target>
+	<target name="all-without-test" description="Runs the full build, but skips unit tests.">
+		<ant antfile="${basedir}/build-essentials/build.xml" dir="${basedir}/build-essentials" inheritAll="false" target="all-without-test">
+			<property name="ant-filters" value="${ant-filters}" />
+			<property name="is.skip.doc" value="${is.skip.doc}" />
+		</ant>
+	</target>
+
+	<target name="create-project" description="Creates a new project in a new or existing module-set. You can then import this project to Eclipse and share it using RTC plugin.">
+		<ant antfile="${basedir}/build-essentials/build.xml" dir="${basedir}/build-essentials" inheritAll="false" target="create-project">
+		</ant>
+	</target>
+
+	<target name="build" depends="all" />
+
+
+
+</project>

@@ -1,0 +1,48 @@
+{
+  "/Brewers": {
+    "schema": "Brewers",
+    "example": {
+      "size": 2,
+      "Brewers": [
+		{
+			"Id": "31442b00-47c4-11e3-8f96-0800200c9a66",
+			"Name": "21st Amendment Brewery",
+			"Description": "Description - 21st Amendment Brewery"
+		},
+		{
+			"Id": "31442b01-47c4-11e3-8f96-0800200c9a66",
+			"Name": "Avery Brewing Company",
+			"Description": "Description - Avery Brewing Company"
+		}
+	  ]
+    }
+  },
+    "/Beers": {
+    "schema": "Beers",
+    "example": {
+      "size": 2,
+      "Beers": [
+		{
+			"Id": "f598195e-b6ee-4790-a96a-f12a3ca5c3cf",
+			"Brewer_Id": "31442b00-47c4-11e3-8f96-0800200c9a66",
+			"Name": "21st Ammendment Hop Crisis!",
+			"Type": "IPA",
+			"ABV": "9.7",
+			"Serving": "12 oz. Draft",
+			"Price": "8",
+			Description: "Hop Crisis. Crisis? What Crisis? A few years ago, when hop prices shot through the roof and the worldwide hop market went into a tailspin, at our pub in San Francisco we decided there was only one thing for us to do. We made the biggest, hoppiest IPA we could imagine and aged it on oak for good measure. This Imperial IPA breaks all the rules with more malt, more hops and more aroma."
+		},
+		{
+			"Id": "6f11fe00-d22a-46f0-887a-e4c13a90cfcd",
+			"Brewer_Id": "31442b01-47c4-11e3-8f96-0800200c9a66",
+			"Name": "Avery Karma",
+			"Type": "Ale",
+			"ABV": 5.2,
+			"Serving": "13 oz. Draft",
+			"Price": 6,
+			"Description": "Karma barrel-aged with Brett from Drie Fonteinen."
+		}
+	  ]
+    }
+  }
+}

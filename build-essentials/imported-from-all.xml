@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<project name="imported-from-all">
+
+	<dirname property="imported.basedir" file="${ant.file.imported-from-all}"/>
+	
+	<property environment="env"/>
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+
+	<record name="${basedir}/build-log.txt" action="start" loglevel="info" />
+	<record name="${basedir}/build-log-verbose.txt" action="start" loglevel="verbose" />
+
+	<property name="current-basedir" value="${basedir}" />
+	<import file="${imported.basedir}/../build-essentials/buildTemplate.xml" />
+
+</project>

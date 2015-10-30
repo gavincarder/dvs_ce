@@ -1,0 +1,8 @@
+<project name="utilities-moduleset-build" basedir=".." default="all">
+
+	<property name="filters" value="utilities/.*" />
+	<property name="ant-filters" value="utilities/*" />
+
+	<import file="../build.xml"/>
+	
+</project>

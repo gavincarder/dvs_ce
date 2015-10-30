@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<AEDM_M2M Version="1.0">
+
+<EntityType Name="Student">
+  	<Property Name="id" Key="true" Type="Edm.String" Length="2048"/>
+  	<Property Name="firstname" Type="Edm.String" Length="2048"/>
+  	<Property Name="lastname" Type="Edm.String" Length="2048"/>
+  <NavigationProperty Name="Classes" Type="Class"  Relationship="Student_Class" Multiplicity="*"/>
+</EntityType>
+
+<EntityType Name="Class">
+  	<Property Name="id" Key="true" Type="Edm.String" Length="2048"/>
+  	<Property Name="name" Type="Edm.String" Length="2048"/>
+  	<Property Name="desciption" DBColumn="DESC" Type="Edm.String" Length="2048"/>
+  <NavigationProperty Name="Students" Type="Student" Relationship="Student_Class" Multiplicity="*"/>
+</EntityType>
+
+<EntityType Name="signup">
+  	<Property Name="student_id" Key="true" Type="Edm.String" Length="2048"/>
+  	<Property Name="class_id" Key="true" Type="Edm.String" Length="2048"/>
+</EntityType>
+  
+<EntitySet Name="Students" EntityType="Student" />
+<EntitySet Name="Classes" EntityType="Class" />
+
+<Association Name="Student_Class" DBLinkTable="SIGNUP" DBJoinOn="STUDENT.ID=SIGNUP.STUDENT_ID,CLASS.ID=SIGNUP.CLASS_ID">
+</Association>
+
+</AEDM_M2M>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<AEDM_BEER Version="1.0">
+
+<EnumType Name="Color">
+    <Member Name="Red" Value="1" />
+    <Member Name="Green" Value="2" />
+    <Member Name="Blue" Value="4" />
+</EnumType>
+
+<EnumType Name="AccessLevel" IsFlags="true">
+    <Member Name="None" Value="0" />
+    <Member Name="Read" Value="1" />
+    <Member Name="Write" Value="2" />
+    <Member Name="Execute" Value="4" />
+    <Member Name="ReadWrite" Value="3" />
+</EnumType>
+
+<EntityType Name="Brewer" DBTable="BREWER" CustomProp="true" CustomPropertiesName="CustomProperties" >
+ 	<Property Name="Id" Type="Edm.String" Length="64" DBColumn="ID" Key="true" Generated="Once" GenMethod="Sequence" GenPattern="BREWER%04d"/>
+	<Property Name="Name" Type="Edm.String" Length="255" DBColumn="NAME"/>
+	<Property Name="Description" Type="Edm.String" Length="255" DBColumn="DESCRIPTION"/>
+	<Property Name="creationTimeStamp" Type="Edm.DateTime" Generated="Once" GenMethod="Init" DefaultValue="CURRENT_TIMESTAMP"/>
+	<Property Name="initTimeStamp" Type="Edm.DateTime" DefaultValue="'2014-11-10 10:32:02.56'"/>
+	<Property Name="creator" Type="Edm.String" Length="255" DefaultValue="'casd'"/>
+	<Property Name="creatorID" Type="Edm.Int32" DefaultValue="10"/>
+	<NavigationProperty Name="Beers" Type="Beer" Relationship="Brewer_Beer" Multiplicity="*" />
+</EntityType>
+
+<EntityType Name="Beer" DBTable="BEER" CustomProp="true" CustomPropertiesName="CustomProperties" >
+ 	<Property Name="Id" Type="Edm.String" Length="64" DBColumn="ID" Key="true" Generated="Once" />
+	<Property Name="Brewer_Id" Type="Edm.String" Length="64" DBColumn="BREWER_ID"/>
+	<Property Name="Name" Type="Edm.String" Length="255" DBColumn="NAME"/>
+	<Property Name="Type" Type="Edm.String" Length="255" DBColumn="TYPE"/>
+	<Property Name="ABV" Type="Edm.Double" Length="8" DBColumn="ABV"/>
+	<Property Name="Serving" Type="Edm.String" Length="255" DBColumn="SERVING"/>
+	<Property Name="Price" Type="Edm.Double" Length="8" DBColumn="PRICE"/>
+	<Property Name="Description" Type="Edm.String" Length="512" DBColumn="DESCRIPTION"/>
+	<NavigationProperty Name="Brewer" Type="Brewer" Relationship="Brewer_Beer" Multiplicity="0..1" />
+	<NavigationProperty Name="Comments" Type="Comment" Relationship="Beer_Comment" Multiplicity="*" />
+	<NavigationProperty Name="Style" Type="Style"  Relationship="Beer_Style" Multiplicity="0..1" />
+</EntityType>
+
+<EntityType Name="Comment" DBTable="COMMENT">
+ 	<Property Name="Id" Type="Edm.String" Length="64" DBColumn="ID" Key="true"/>
+	<Property Name="Reference_Resource_Id" Type="Edm.String" Length="64" DBColumn="REFERENCED_RESOURCE_ID"/>
+	<Property Name="Commenter_Name" Type="Edm.String" Length="255" DBColumn="COMMENTER_NAME"/>
+	<Property Name="Commenter_EMail" Type="Edm.String" Length="255" DBColumn="COMMENTER_EMAIL"/>
+	<Property Name="Comment" Type="Edm.String" Length="255" DBColumn="COMMENT"/>
+	<NavigationProperty Name="Beer" Type="Beer"  Relationship="Beer_Comment" Multiplicity="0..1" />
+</EntityType>
+  
+<EntityType Name="Style" DBTable="STYLE" CustomProp="true" CustomPropertiesName="StyleCustomProperties" >
+ 	<Property Name="Name" Type="Edm.String" Length="64" DBColumn="NAME" Key="true"/>
+	<Property Name="Description" Type="Edm.String" Length="255" DBColumn="DESCRIPTION"/>
+	<NavigationProperty Name="Beer" Type="Beer"  Relationship="Beer_Style" Multiplicity="*" />
+</EntityType>
+
+<EntityType Name="Student" CustomProp="true" >
+  	<Property Name="id" Key="true" Type="Edm.String" Length="2048"/>
+  	<Property Name="firstname" Type="Edm.String" Length="2048"/>
+  	<Property Name="lastname" Type="Edm.String" Length="2048"/>
+  <NavigationProperty Name="Classes" Type="Class"  Relationship="Student_Class" Multiplicity="*"/>
+</EntityType>
+
+<EntityType Name="Class">
+  	<Property Name="id" Key="true" Type="Edm.String" Length="2048"/>
+  	<Property Name="name" Type="Edm.String" Length="2048"/>
+  	<Property Name="desciption" DBColumn="DESC" Type="Edm.String" Length="2048"/>
+  <NavigationProperty Name="Students" Type="Student" Relationship="Student_Class" Multiplicity="*"/>
+</EntityType>
+
+<EntityType Name="signup">
+  	<Property Name="student_id" Key="true" Type="Edm.String" Length="2048"/>
+  	<Property Name="class_id" Key="true" Type="Edm.String" Length="2048"/>
+</EntityType>
+  
+<EntitySet Name="Brewers" EntityType="Brewer" />
+<EntitySet Name="Beers" EntityType="Beer" />
+<EntitySet Name="Comments" EntityType="Comment" />
+<EntitySet Name="Styles" EntityType="Style" />
+<EntitySet Name="Students" EntityType="Student" />
+<EntitySet Name="Classes" EntityType="Class" />
+
+
+<Association Name="Brewer_Beer" DBLinkTable="BEER" DBJoinOn="BEER.BREWER_ID=BREWER.ID">
+</Association>
+<Association Name="Beer_Comment" DBLinkTable="COMMENT" DBJoinOn="COMMENT.REFERENCED_RESOURCE_ID=BEER.ID">
+</Association>
+<Association Name="Beer_Style" DBLinkTable="BEER" DBJoinOn="BEER.TYPE=STYLE.NAME">
+</Association>
+<Association Name="Student_Class" DBLinkTable="SIGNUP" DBJoinOn="SIGNUP.STUDENT_ID=STUDENT.ID,SIGNUP.CLASS_ID=CLASS.ID">
+</Association>
+
+</AEDM_BEER>

@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+
+<Project>
+<Name>Bookshop</Name>
+<Version>V1</Version>
+<Notes></Notes>
+<ActiveConfig>{{LISA_PROJ_ROOT}}/Configs/project.config</ActiveConfig>
+<ProjectPrefs>
+<Pref>
+<Key>migrationLevel</Key>
+<Value>&lt;float&gt;5.1&lt;/float&gt;</Value>
+</Pref>
+</ProjectPrefs>
+</Project>

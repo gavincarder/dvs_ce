@@ -1,0 +1,253 @@
+<?xml version="1.0"?>
+<project name="buildAllSubprojects" default="all"
+        xmlns:ivy="antlib:org.apache.ivy.ant"
+        xmlns:antcontrib="antlib:net.sf.antcontrib"
+		xmlns:jacoco="antlib:org.jacoco.ant">
+
+	<!-- Make sure we have a correct basedir even if this file is included -->
+	<dirname property="buildAll-basedir" file="${ant.file.buildAllSubprojects}" />
+
+	<property environment="env"/>
+
+	<ivy:settings file="${buildAll-basedir}/ivysettings.xml" />
+
+	<import file="${buildAll-basedir}/buildCommon.xml" />
+
+	<property name="ant-filters" value="*/*"/>
+
+	<record name="${user.dir}/build-log.txt" action="start" loglevel="info" />
+	<record name="${user.dir}/build-log-verbose.txt" action="start" loglevel="verbose" />
+
+    <target name="_init">
+        <ivy:resolve/>
+        <ivy:report todir='build/ivy-reports' />
+        <ivy:cachepath pathid="compile.path" conf="compile" />
+        <ivy:cachepath pathid="runtime.path" conf="runtime" />
+        <ivy:cachepath pathid="test.path" conf="test" />
+        <ivy:cachepath pathid="build.path" conf="build" />
+     </target>
+     
+    <target name="_taskdefs" depends="_init">
+        <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="build.path"/>
+		<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" classpathref="build.path"/>
+    </target>
+    
+	<target name="_sort-modules">
+		<echo level="info">Filter for the projects to be built: ${ant-filters}</echo>
+
+		<!-- Let IVY figure out the order for build, based on the dependencies -->
+		<ivy:buildlist reference="build-path" ivyfilepath="./ivy.xml" onMissingDescriptor="skip">
+			<fileset dir="${buildAll-basedir}/..">
+				<include name="*/build.xml" />
+				<include name="*/*/build.xml" />
+				<exclude name="build-essentials/**/*.xml" />
+				<exclude name="./build.xml" />
+			</fileset>
+		</ivy:buildlist>
+
+		<echo level="info" message="Projects Build Order: ${ivy.sorted.modules}"/>
+	</target>
+
+	<!-- We use this instead of calling subant task, since this allows us to print nice delimiter
+       in a single place before we start building a module. -->
+	<target name="build-single-module">
+		<property name="two-last-folders-regexp" value="^*.[\\/]([^\\/]+[\\/][^\\/]+)[\\/][^\\/]+$" />
+		<propertyregex property="two-last-folders" input="${module}"
+				regexp="${two-last-folders-regexp}" select="\1" />
+		<echo level="info" />
+		<echo level="info">*****************************************************</echo>
+		<echo level="info">* ${two-last-folders}</echo>
+		<echo level="info">* Target: ${target-to-call}</echo>
+		<echo level="info">*****************************************************</echo>
+
+		<if>
+			<equals arg1="${target-to-call}" arg2="all" />
+			<then>
+				<ant antfile="${module}" inheritAll="false" useNativeBasedir="true">
+					<target name="clean" />
+					<target name="this.build" />
+					<target name="test" />					
+					<target name="package" />
+					<target name="publish" />
+				</ant>
+			</then>
+			<elseif>
+				<equals arg1="${target-to-call}" arg2="all-without-test" />
+				<then>
+					<ant antfile="${module}" inheritAll="false" useNativeBasedir="true">
+						<target name="clean" />						
+						<target name="this.build" />
+						<target name="package" />
+						<target name="publish" />
+					</ant>
+				</then>
+			</elseif>
+			<else>
+				<ant antfile="${module}" target="${target-to-call}" inheritAll="false" useNativeBasedir="true">
+				</ant>
+			</else>
+		</if>
+	</target>
+
+	<target name="-post-clean-step">
+	</target>
+	
+	<!-- Our targets we support at top level and module set level -->
+	<target name="-build-all" depends="_taskdefs">
+		<foreach list="${toString:build-path}" delimiter=";" param="module" target="build-single-module">
+			<param name="target-to-call" value="all" />
+		</foreach>
+	</target>
+	
+	<target name="all" depends="clean-ivy-cache, -clean-top-level, -post-clean-step, _sort-modules, -build-all"/>
+
+	<target name="-coverage-report" depends="_taskdefs">
+
+		<jacoco:merge destfile="${buildAll-basedir}/../build/code-coverage/casd.exec">
+			<fileset dir="${buildAll-basedir}/.." includes="**/*.exec"/>
+		</jacoco:merge>
+
+		<jacoco:report>
+			<executiondata>
+				<file file="${buildAll-basedir}/../build/code-coverage/casd.exec"/>
+			</executiondata>
+
+			<structure name="Report">
+				<classfiles>
+					<fileset dir="${buildAll-basedir}/..">
+						<include name="**/build/classes/**/*.class" />
+					</fileset>
+				</classfiles>
+				<sourcefiles encoding="UTF-8">
+					<dirset dir="${buildAll-basedir}/..">
+						<include name="**/src/java" />
+					</dirset>
+				</sourcefiles>
+			</structure>
+			<html destdir="${buildAll-basedir}/../build/code-coverage"/>
+		</jacoco:report>
+
+		<delete file="${buildAll-basedir}/../build/code-coverage/coverage.zip"/>
+		<zip destfile="${buildAll-basedir}/../build/code-coverage/coverage.zip" basedir="${buildAll-basedir}/../build/code-coverage" excludes="casd.exec"/> 
+	</target>
+
+	<!-- This empty target needs to be here for CADE, since it calls it if there is "build" token in buildorder.properties -->
+	<target name="nls-checkin"/>
+
+	<!-- Our targets common for root and module-set level -->
+	<target name="all-without-test" depends="_taskdefs,_sort-modules">
+		<foreach list="${toString:build-path}" delimiter=";" param="module" target="build-single-module">
+			<param name="target-to-call" value="all-without-test" />
+		</foreach>
+	</target>
+
+	<target name="-clean-top-level" description="Removes the top-level build directory, where ivy publishing stores its files">
+		<delete dir="${buildAll-basedir}/../build" quiet="true" />
+		<delete>
+			<fileset dir="${buildAll-basedir}/.." includes="build/**" />
+		</delete>
+	</target>
+
+	<target name="clean" depends="_taskdefs,-clean-top-level,_sort-modules">
+		<foreach list="${toString:build-path}" delimiter=";" param="module" target="build-single-module">
+			<param name="target-to-call" value="clean" />
+		</foreach>
+	</target>
+
+	<target name="this.build" depends="_taskdefs,_sort-modules">
+		<foreach list="${toString:build-path}" delimiter=";" param="module" target="build-single-module">
+			<param name="target-to-call" value="this.build" />
+		</foreach>
+	</target>
+
+	<target name="test" depends="_taskdefs,_sort-modules">
+		<foreach list="${toString:build-path}" delimiter=";" param="module" target="build-single-module">
+			<param name="target-to-call" value="test" />
+		</foreach>
+	</target>
+
+	<target name="doc" depends="_taskdefs,_sort-modules">
+		<foreach list="${toString:build-path}" delimiter=";" param="module" target="build-single-module">
+			<param name="target-to-call" value="doc" />
+		</foreach>
+	</target>
+
+	<target name="package" depends="_taskdefs,_sort-modules">
+		<foreach list="${toString:build-path}" delimiter=";" param="module" target="build-single-module">
+			<param name="target-to-call" value="package" />
+		</foreach>
+	</target>
+
+	<target name="publish" depends="_taskdefs,_sort-modules">
+		<foreach list="${toString:build-path}" delimiter=";" param="module" target="build-single-module">
+			<param name="target-to-call" value="publish" />
+		</foreach>
+	</target>
+
+	<target name="deploy" depends="_taskdefs,_sort-modules">
+		<foreach list="${toString:build-path}" delimiter=";" param="module" target="build-single-module">
+			<param name="target-to-call" value="deploy" />
+		</foreach>
+	</target>
+
+	<target name="check-deploy-result" depends="_taskdefs,_sort-modules">
+		<foreach list="${toString:build-path}" delimiter=";" param="module" target="build-single-module">
+			<param name="target-to-call" value="check-deploy-result" />
+		</foreach>
+	</target>
+
+	<tstamp>
+		<format property="current_date_time" pattern="yyyy.MM.dd hh:mm:ss aa" locale="en" />
+	</tstamp>	
+
+	<!-- Target to create new project -->
+	<target name="component-input">
+		<input message="Component name (e.g. casd, dvs-app, lisa-extensions, lisa-plugins, open-source, utilities, etc.):" addproperty="new-component-name" />
+		<available file="${buildAll-basedir}/../${new-component-name}" type="dir" property="component-exists" />
+	</target>
+	
+	<target name="component-check" depends="component-input" unless="component-exists">
+		<input message="Component ${new-component-name} does not exist and will be created. Continue? [y/n]:" validargs="y,n" addproperty="create-component-answer" />
+		<condition property="abort-create">
+			<equals arg1="n" arg2="${create-component-answer}"/>
+		</condition>		
+	</target>
+	
+	<target name="project-input" unless="abort-create">
+		<input message="Project inside the component name:" addproperty="new-project-name" />
+		<available file="${buildAll-basedir}/../${new-component-name}/${new-project-name}" type="dir" property="project-exists" />
+	</target>
+	
+	<target name="project-check" depends="project-input" if="project-exists">
+		<fail message="Project ${new-component-name}/${new-project-name} already exists."/>
+	</target>
+	
+	<target name="create-project" depends="component-check,project-check,copy-component,copy-project" unless="abort-create"/>
+	
+	<target name="copy-component" unless="abort-create">
+		<copy todir="${buildAll-basedir}/../${new-component-name}" overwrite="false">
+			<fileset dir="${buildAll-basedir}/project-template">
+				<type type="file" />
+				<include name="*" />
+				<present present="srconly" targetdir="${buildAll-basedir}/../${new-component-name}"/>
+			</fileset>
+			<filterset>
+				<filter token="component-name" value="${new-component-name}"/>
+			</filterset>
+		</copy>
+	</target>
+	
+	<target name="copy-project" unless="abort-create">
+		<copy todir="${buildAll-basedir}/../${new-component-name}/${new-project-name}">
+			<fileset dir="${buildAll-basedir}/project-template/project">
+				<include name="**/*" />
+			</fileset>
+			<filterset>
+				<filter token="component-name" value="${new-component-name}"/>
+				<filter token="project-name" value="${new-project-name}"/>
+			</filterset>
+		</copy>
+		<move file="${buildAll-basedir}/../${new-component-name}/${new-project-name}/_project" tofile="${buildAll-basedir}/../${new-component-name}/${new-project-name}/.project" />
+		<move file="${buildAll-basedir}/../${new-component-name}/${new-project-name}/_classpath" tofile="${buildAll-basedir}/../${new-component-name}/${new-project-name}/.classpath" />
+	</target>
+</project>

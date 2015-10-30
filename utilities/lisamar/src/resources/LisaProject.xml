@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+
+<Project>
+<Name></Name>
+<Notes></Notes>
+<ActiveConfig>{{LISA_PROJ_ROOT}}/Configs/project.config</ActiveConfig>
+<ProjectPrefs>
+<Pref>
+<Key>migrationLevel</Key>
+<Value>&lt;float&gt;5.1&lt;/float&gt;</Value>
+</Pref>
+</ProjectPrefs>
+</Project>

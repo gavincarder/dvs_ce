@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!DOCTYPE project>
+<project name="utilities.commonUtils" basedir="." default="all">
+
+  <!-- Import common build script. "dir.build" property needs to be defined as well,
+       since it is used in the common build scripts. -->
+	<property name="dir.build" location="${basedir}/../.." />
+	<import file="${dir.build}/build-essentials/imported-from-all.xml" />
+
+  <!-- This allows you to add more stuff to compilation classpath. However, it should be
+       left this way in most cases and dependencies managed through Ivy. Please add items
+       in here only in really obscure cases where you cannot add your dependency to ivy
+       "compile" configuration. -->
+	<path id="classpath.compile.src">
+		<path refid="cachepath.compile" />
+	</path>
+
+	<!--
+	Now, after importing the imported-from-all.xml, there are several t.* targets you can use, in fact you might use
+	just them and not implement any logic in here. Modify this script only if you require some special handling
+	during the build that would be hard to implement globally. Otherwise, if you are missing something in the
+	common builds, please contact Pavel Novak and we can add it.
+	
+	If you would do any logic here, these are the properties that you can use:
+	${build-dir}
+		The main build directory where everything regarding build happens.
+	${to-package-dir}
+		A directory where the content of the build result is placed when t.prepare-package finishes.
+		This allows you to modify the content before you call t.package to create jar or war file.
+	${install-dir}
+		The directory where the content that is then packaged to *-install.zip file. This directory
+		is populated during t.prepare-package with the content of resources directory, you can modify
+		the content then. You would probably like to put at least the resulting artifact to a correct
+		folder in there.
+		The directory is zipped and published during t.publish task.
+	${resources-to-package-dir}
+		Directory with the content that will be then zipped and published as ${artifact-resources-name}. This
+		directory is created and populated with the content of "resources" folder during t.prepare-package
+		task.
+
+	${module-name}
+		Module name of your component as specified in ivy.xml
+	${artifact-name}
+		The name of the main artifact you produces, without version number. It is basically ${module-name}.jar
+		or ${module-name}.war
+	${artifact-osgi-name}
+		The name of the OSGi artifact you produces, if you had set package.osgi=true in build.properties.
+	${artifact-resources-name}
+		The name of resources artifact, basically ${module-name}-resources.zip
+		
+	${temp-dir}
+		Temporary directory you can use for whatever reason if you need to store temporary file/dir during
+		the build. To be sure that it does not collide, create file/directory within this file using
+		ant task <tempfile .../>
+	-->
+	
+
+  <!-- Here using t.clean should be enough. It deletes the whole ${build-dir} -->
+  <target name="clean" depends="t.clean">
+	</target>
+
+	<!--
+	Use this target to compile java classes. If you do not need any special handling, depending on t.build
+	is sufficient. The result of this are class files in ${build-dir}/classes. "compile" ivy dependencies are used
+	for the build.
+	-->
+	<target name="this.build" depends="t.build">
+	</target>
+
+	<!-- Copy test data to junit working directory -->
+	<target name="prepare-test">
+		<property name="test-dir" location="${build-dir}/junit-working-dir" />
+		<copy todir="${test-dir}">
+			<fileset dir="." includes="test/resources/**"/>
+		</copy>
+	</target>
+	
+	<!--
+	Runs unit tests that are present in test/java. test ivy dependencies are used, there is
+	jmockit and junit required (see ivy.xml in this empty project).
+	The results of the test are stored in ${build-dir}, together with code coverage of the java
+	sources.
+	-->
+  <target name="test" depends="prepare-test, t.test">
+	</target>
+
+	<!--
+	Creates a resulting jar or war file, should depend on the build target.
+	By default, depending on t.prepare-package and t.package is sufficient. These two tasks are split to allow
+	for modifications in what is then packaged.
+	
+	See ${to-package-dir}, ${install-dir}, ${resources-to-package-dir} explanation above.
+	-->
+  <target name="package" depends="t.prepare-package, t.package">
+	</target>
+
+  <!--
+	Publishes the artifacts to a local repository located in build-essentials/local-repo. Only the build
+	machine publishes to isl-ivy.
+	This task assumes that all the artifacts defined in ivy.xml in <publications ...> section are present
+	in ${build-dir}/dist directory at this time.
+	-->
+	<target name="publish" depends="t.publish">
+	</target>
+	
+</project>

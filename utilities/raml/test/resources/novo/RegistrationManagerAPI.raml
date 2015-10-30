@@ -1,0 +1,98 @@
+#%RAML 0.8
+---
+title: "Registration Manager API"
+version: v1
+#baseUri: https://localhost:8080/raml/resources
+protocols: [ HTTP, HTTPS ]
+mediaType: application/json
+documentation:
+    - title: Home
+      content: |
+        JUG - Contract-first with RAML
+schemas:
+    - registerService: |
+        {   "$schema": "http://json-schema.org/draft-04/schema",
+            "type": "object",
+            "description": "A single service registration",
+            "properties": {
+                "serviceCode":              { "type": "string" },
+                "siteName":                 { "type": "string" },
+                "registrationID":           { "type": "integer" },
+                "registrationUser":         { "type": "string" },
+                "serviceUuid":              { "type": "string" },
+                "siteId":                   { "type": "string" },
+                "registrationStatus":       { "type": "string" },
+                "registrationStart":        { "type": "string" },
+                "registrationEnd":          { "type": "string" },
+                "registrationDurationSec":  { "type": "string" },
+                "registrationResult":       { "type": "string" },
+                "lastExecutedActivity":     { "type": "string" },
+                "creationUserId":           { "type": "string" },
+                "deletionUserId":           { "type": "string" },
+                "modifiedUserId":           { "type": "string" },
+                "version":                  { "type": "string" },
+                "isDeleted":                { "type": "string" },
+                "isEnabled":                { "type": "string" },
+                "isHidden":                 { "type": "string" }    
+            },
+            "required": [ "serviceCode", "siteName" ],
+            "primaryKeys": [ "serviceCode", "siteName" ]
+        }
+
+    - registerServices: |
+        {   "$schema": "http://json-schema.org/draft-04/schema",
+            "type": "object",
+            "description": "a collection of service registrations",
+            "properties": {
+                "size":  { "type": "integer" },
+                "services":  {
+                    "type": "array",
+                    "items": { "$ref": "registerService" }
+                }
+            },
+            "required": [ "size" ]
+        }
+/registerServices:
+    get:
+        description: Get a list of all the services registered in the system
+        responses:
+            200:
+                body:
+                    application/json:
+                        schema: registerServices
+    post:
+        description: Add registerService
+        body:
+            application/json:
+                schema: registerService
+        responses:
+            201:
+                body:
+                    application/json:
+                        schema: registerService
+/registerServices({serviceCode}):
+    uriParameters:
+        serviceCode:
+            displayName: Service Code
+            type: string
+    get:
+        description: Retrieve a specific registerService
+        responses:
+            200:
+                body:
+                    application/json:
+                        schema: registerService
+    post:
+        description: Update an registerService
+        body:
+            application/json:
+                schema: registerService
+        responses:
+            200:
+                body:
+                    application/json:
+                        schema: registerService
+    delete:
+        description: Delete a registered Service
+        responses:
+            200:

@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+
+<serviceImage id="1" name="{{Enter VS Model Name}}" created="2014-05-07.11:52:07.105" lastModified="2014-05-07.11:52:07.105" version="7.5.0.1156">
+<st> <!-- Begin Transactions List-->
+</st> <!-- End Transactions List-->
+<ucrr>
+<rp id="2" t="0">
+<m>
+<p n="HTTP-Response-Code">200</p>
+<p n="HTTP-Response-Code-Text">OK</p>
+<p n="Server">LISA/Virtual-Environment-Server</p>
+<p n="Date">{{=httpNow()}}</p>
+<p n="X-Powered-By">LISA/{{=lisaVersionString()}}</p>
+</m>
+</rp>
+</ucrr>
+<usrr>
+<rp id="3" t="0">
+<m>
+<p n="HTTP-Response-Code">404</p>
+<p n="HTTP-Response-Code-Text">Not Found</p>
+<p n="Server">LISA/Virtual-Environment-Server</p>
+<p n="Date">{{=httpNow()}}</p>
+<p n="X-Powered-By">LISA/{{=lisaVersionString()}}</p>
+<p n="Content-Type">text/html</p>
+</m>
+<bd>&lt;html&gt;&#13;&#10;    &lt;head&gt;&lt;title&gt;404 Not Found&lt;/title&gt;&lt;/head&gt;&#13;&#10;    &lt;body&gt;&#13;&#10;        &lt;h1&gt;Not Found&lt;/h1&gt;&#13;&#10;        &lt;p&gt;The requested URL was not found on this server.&lt;/p&gt;&#13;&#10;        &lt;hr/&gt;&#13;&#10;        &lt;p&gt;&lt;i&gt;The LISA VSE service could not match your request to a recorded request.&amp;nbsp; Consider expanding your service image.&lt;/i&gt;&lt;/p&gt;&#13;&#10;        &lt;br/&gt;&lt;font size=&quot;-2&quot;&gt;Produced by a LISA virtualized web server.&lt;/font&gt;&#13;&#10;    &lt;/body&gt;&#13;&#10;&lt;/html&gt;&#13;&#10;</bd>
+</rp>
+</usrr>
+</serviceImage>

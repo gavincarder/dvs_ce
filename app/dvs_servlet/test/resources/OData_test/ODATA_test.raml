@@ -1,0 +1,641 @@
+#%RAML 0.8
+---
+title: Virtual API Cloud API
+version: v1
+baseUri: http://advapi.ca.com/vapi
+documentation:
+  - title: Virtual API Cloud API
+    content: |
+      This API can be used to access the Virtual API Cloud service. For most
+      calls you must supply a GitHub authentication token in the header
+      parameters otherwise you will receive a 401 Unauthorized response.
+#      
+# ==================================
+# Traits
+# ==================================
+traits:
+  - Secured:
+      description: Most calls require authentication.
+      headers:
+        X-VAPI-AuthAuthority:
+          description: The only valid authority is GitHub.
+          type: string
+          required: true
+          example: GitHub
+        X-VAPI-AccessToken:
+          description: This token must be obtained from GitHub.
+          type: string
+          required: true
+          example: 612b948c802308358ebb9f7303ed294434207ef8
+  - JsonReq:
+      description: Request data should be in JSON format.
+      headers:
+        Content-Type:
+          type: string
+          required: true
+          example: application/json
+#      
+# ==================================
+# Resources
+# ==================================
+/vapirest:
+  /publicApis:
+    displayName: Public APIs
+    description: Get a list of all the currently defined APIs.
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "success",
+                  "returnCode": 0,
+                  "success": true,
+                  "apigridInfo": [
+                    {
+                      "id": "25cf55c0-380e-11e4-ad53-ed9c16547483",
+                      "creator": "vapihealthcheck",
+                      "avatar": "https://avatars.githubusercontent.com/u/8708025?v=2",
+                      "name": "check",
+                      "status": null,
+                      "protocol": null,
+                      "modified": null,
+                      "created": "2014-09-25 20:00:00",
+                      "uri": "http://advapi.ca.com/vapi/api/vapihealthcheck/check",
+                      "description": "This is the Virtual API Cloud system health check API. We use it to check that our service is up and running and you can too!",
+                      "apikey": null,
+                      "serviceName": null,
+                      "averageRating": null
+                    }
+                  ]
+                }
+  /apis({username}):
+    displayName: User APIs 
+    description: Get all the APIs for the specified user.
+    uriParameters:
+      username:
+        description: The name of a Virtual API Cloud user.
+        type: string
+        example: dilbert
+    is: [ Secured ]
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "success",
+                  "returnCode": 0,
+                  "success": true,
+                  "apigridInfo": [
+                    {
+                      "id": "49341ad1-5b6a-11e4-905f-95dda02f15a0",
+                      "creator": "{username}",
+                      "avatar": "https://avatars.githubusercontent.com/u/7148237?v=2",
+                      "name": "Api1",
+                      "status": "running",
+                      "protocol": "HTTP;REST",
+                      "modified": "2014-10-24 06:41:32",
+                      "created": "2014-10-24 06:41:18",
+                      "uri": "http://advapi.ca.com/vapi/api/dilbert/Api1",
+                      "description": "",
+                      "apikey": "49341ad1-5b6a-11e4-905f-95dda02f15a0",
+                      "serviceName": "AutoGenService-562195CB5B6A11E4BA55005056881D2E",
+                      "averageRating": {
+                        "rating": 0,
+                        "listRatings": [ ]
+                      }
+                    }
+                  ]
+                }
+  /apiSummary({username},{apiname}):
+    displayName: API Summary 
+    description: Display summary info for the specified API.
+    uriParameters:
+      username:
+        description: The name of a Virtual API Cloud user.
+        type: string
+        example: dilbert
+      apiname:
+        description: The name of a Virtual API Cloud api.
+        type: string
+        example: Api1
+    is: [ Secured ]
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "success",
+                  "returnCode": 0,
+                  "success": true,
+                  "apisummaryInfo": {
+                    "id": "49341ad1-5b6a-11e4-905f-95dda02f15a0",
+                    "name": "{apiname}",
+                    "description": "ENC:412073686f7274206465736372697074696f6e",
+                    "url": "http://advapi.ca.com/vapi/api/{username}/{apiname}",
+                    "modified": "2014-10-24 06:41:32",
+                    "protocol": "HTTP;REST",
+                    "status": "running",
+                    "created": "2014-10-24 06:41:18",
+                    "servicename": "AutoGenService-562195CB5B6A11E4BA55005056881D2E",
+                    "apiKey": "49341ad1-5b6a-11e4-905f-95dda02f15a0"
+                  }
+                }
+  /apiDetails({username},{apiname}):
+    displayName: API Details 
+    description: Display detail info for the specified API.
+    uriParameters:
+      username:
+        description: The name of a Virtual API Cloud user.
+        type: string
+        example: dilbert
+      apiname:
+        description: The name of a Virtual API Cloud api.
+        type: string
+        example: Api1
+    is: [ Secured ]
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "success",
+                  "returnCode": 0,
+                  "success": true,
+                  "methods": [
+                    {
+                      "name": "Default Group",
+                      "pairs": [
+                        {
+                          "pairName": "pair-0",
+                          "name": "Default Group",
+                          "id": "49341ad2-5b6a-11e4-905f-95dda02f15a0",
+                          "request": "POST /rest/my-example-resource/{THING}\nContent-Type: application/json;charset=UTF-8\n\n{ \"my-example-item\": 12520}",
+                          "response": "{ \"my-example-response-{THING}\": \"12520\" }",
+                          "processedRequest": null,
+                          "processedResponse": null,
+                          "type": 1,
+                          "type_name": "REST"
+                        }
+                      ]
+                    }
+                  ]       
+                }
+  /apiDocs({username},{apiname})/get:
+    displayName: Get API Documentation 
+    description: Display documentation for the specified API.
+    uriParameters:
+      username:
+        description: The name of a Virtual API Cloud user.
+        type: string
+        example: dilbert
+      apiname:
+        description: The name of a Virtual API Cloud api.
+        type: string
+        example: Api1
+    is: [ Secured ]
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "success",
+                  "returnCode": 0,
+                  "success": true,
+                  "documentationText": "ENC:4578616d706c6520646f63756d656e746174696f6e"
+                }
+  /user/lastLogin({username}):
+    displayName: User Last Login
+    description: Get epoch time of last login for specified user.
+    uriParameters:
+      username:
+        description: The name of a Virtual API Cloud user.
+        type: string
+        example: dilbert
+    is: [ Secured ]
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "",
+                  "returnCode": 0,
+                  "success": true,
+                  "value": 1414163249182
+                }
+  /createApi:
+    displayName: Create API 
+    description: Create a RESTful Service API. The user specified in the request body must be the authenticated Virtual API Cloud user. 
+    is: [ Secured, JsonReq ]
+    post:
+      body:
+        application/json:
+          example: |
+            {
+              "api":
+              {
+                "id": "",
+                "name": "Api1",
+                "description": "",
+                "type": "1",
+                "type_name": "REST",
+                "methods": [
+                  {
+                    "name": "Default Group",
+                    "pairs": [
+                      {
+                        "name": "Default Group",
+                        "pairName": "pair-0",
+                        "request":"GET /something/id-18040\n",
+                        "response":"{\"result\": 18040}",
+                        "type": 1,
+                        "type_name": "REST"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "user": "dilbert"
+            }
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "success",
+                  "returnCode": 0,
+                  "success": true,
+                  "api": {
+                    "id": "ff4b2da1-5b91-11e4-989e-95dda02f15a0",
+                    "name": "Api1",
+                    "description": "",
+                    "redeploy": false,
+                    "uri": "http://advapi.ca.com/vapi/api/dilbert/Api1",
+                    "type": "1",
+                    "type_name": "REST",
+                    "methods": [
+                      {
+                        "name": "Default Group",
+                        "pairs": [
+                          {
+                            "pairName": "pair-0",
+                            "name": "Default Group",
+                            "id": null,
+                            "request":"GET /something/id-18040\n",
+                            "response":"{\"result\": 18040}",
+                            "processedRequest":"GET /something/id-18040\n",
+                            "processedResponse":null,
+                            "type": 1,
+                            "type_name": "REST"
+                          }
+                        ]
+                      }
+                    ],
+                    "files": null
+                  }
+                }
+  /modifyApi({authUser},{apiname}):
+    displayName: Modify API 
+    description: Modify the name/description of the specified API.
+    uriParameters:
+      authUser:
+        description: The name of the authenticated Virtual API Cloud user.
+        type: string
+        example: dilbert
+      apiname:
+        description: The name of a Virtual API Cloud api.
+        type: string
+        example: Api1
+    is: [ Secured, JsonReq ]
+    post:
+      body:
+        application/json:
+          example: |
+            {
+              "name": "New-Api-Name",
+              "description": "New description",
+              "redeploy": false
+            }
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "OK",
+                  "returnCode": 200,
+                  "success": true,
+                  "api": {
+                    "id": "ff4b2da1-5b91-11e4-989e-95dda02f15a0",
+                    "name": "New-Api-Name",
+                    "description": "New description",
+                    "redeploy": false,
+                    "uri": "http://advapi.ca.com/vapi/api/dilbert/New-Api-Name",
+                    "type": null,
+                    "type_name": null,
+                    "methods": null,
+                    "files": null
+                  }
+                }
+  /apis({authUser},{apiname}):
+    displayName: Delete API 
+    description: Delete the specified API.
+    uriParameters:
+      authUser:
+        description: The name of the authenticated Virtual API Cloud user.
+        type: string
+        example: dilbert
+      apiname:
+        description: The name of a Virtual API Cloud api.
+        type: string
+        example: Api1
+    is: [ Secured ]
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "API {apiname} deleted from user {authUser}",
+                  "returnCode": 1,
+                  "success": true
+                }
+  /apiDocs({authUser},{apiname})/set:
+    displayName: Set API Documentation 
+    description: Set the documentation of the specified API.
+    uriParameters:
+      authUser:
+        description: The name of the authenticated Virtual API Cloud user.
+        type: string
+        example: dilbert
+      apiname:
+        description: The name of a Virtual API Cloud api.
+        type: string
+        example: Api1
+    is: [ Secured, JsonReq ]
+    post:
+      body:
+        application/json:
+          example: |
+            {
+              "docText": "My new documentation",
+            }
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "success",
+                  "returnCode": 0,
+                  "success": true,
+                  "documentationText": null
+                }
+  /apiRRPairs({authUser},{apiname})/set:
+    displayName: Set API RR Pairs 
+    description: Set the RR pairs of the specified API.
+    uriParameters:
+      authUser:
+        description: The name of the authenticated Virtual API Cloud user.
+        type: string
+        example: dilbert
+      apiname:
+        description: The name of a Virtual API Cloud api.
+        type: string
+        example: Api1
+    is: [ Secured, JsonReq ]
+    post:
+      body:
+        application/json:
+          example: |
+            {
+              "methods": [
+                {
+                  "name": "Default Group",
+                  "pairs": [
+                    {
+                      "pairName":"pair-0",
+                      "name":"Default Group",
+                      "id":"4da1e522-5def-11e4-948c-95dda02f15a0",
+                      "request":"GET /something/id-16410\n",
+                      "response":"{\"result\": 16410}",
+                      "processedRequest":null,
+                      "processedResponse":null,
+                      "type": 1,
+                      "type_name": "REST"
+                    }
+                  ]
+                }
+              ]
+            }
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "OK",
+                  "returnCode": 200,
+                  "success": true
+                }
+  /apis({authUser},{apiname})/start:
+    displayName: Start API 
+    description: Start the specified API.
+    uriParameters:
+      authUser:
+        description: The name of the authenticated Virtual API Cloud user.
+        type: string
+        example: dilbert
+      apiname:
+        description: The name of a Virtual API Cloud api.
+        type: string
+        example: Api1
+    is: [ Secured ]
+    post:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "success",
+                  "returnCode": 0,
+                  "success": true
+                }
+  /apis({authUser},{apiname})/stop:
+    displayName: Stop API 
+    description: Stop the specified API.
+    uriParameters:
+      authUser:
+        description: The name of the authenticated Virtual API Cloud user.
+        type: string
+        example: dilbert
+      apiname:
+        description: The name of a Virtual API Cloud api.
+        type: string
+        example: Api1
+    is: [ Secured ]
+    post:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "success",
+                  "returnCode": 0,
+                  "success": true
+                }
+  /apis({authUser},{apiname})/redeploy:
+    displayName: Redeploy API 
+    description: Redeploy (stop/start) the specified API.
+    uriParameters:
+      authUser:
+        description: The name of the authenticated Virtual API Cloud user.
+        type: string
+        example: dilbert
+      apiname:
+        description: The name of a Virtual API Cloud api.
+        type: string
+        example: Api1
+    is: [ Secured ]
+    post:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "success",
+                  "returnCode": 0,
+                  "success": true
+                }
+  /feedback:
+    displayName: Feedback
+    description: Provide Virtual API Cloud feedback. The user specified in the request body must be the authenticated Virtual API Cloud user.
+    is: [ Secured, JsonReq ]
+    post:
+      body:
+        application/json:
+          example: |
+            {
+              "username": "dilbert",
+              "grade": "3",
+              "message": "My feedback",
+              "checked": [false,false,false,false,false,false,false,false,false,false,false],
+              "email": "Email Address"
+            }
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "",
+                  "returnCode": 1,
+                  "success": true
+                }
+  /user/loginUsers:
+    displayName: Login Users 
+    description: Get the users who have logged in within the previous number of days. The authenticated user must be a superuser.
+    is: [ Secured ]
+    get:
+      queryParameters:
+        period:
+          description: The number of days previous to today. Default is 10 days.
+          type: integer
+          example: 10
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "Get Last Logged Users List Success for period of days: 10",
+                  "returnCode": 0,
+                  "success": true,
+                  "lastLoggedUsers": [
+                    {
+                      "uid": "4ee941f0-5dde-11e4-948c-95dda02f15a0",
+                      "name": null,
+                      "id": "dilbert",
+                      "source": "github",
+                      "avatar": "https://avatars.githubusercontent.com/u/7148237?v=2",
+                      "apis": {
+                        "4da1e521-5def-11e4-948c-95dda02f15a0": {
+                          "id": "4da1e521-5def-11e4-948c-95dda02f15a0",
+                          "userId": "4ee941f0-5dde-11e4-948c-95dda02f15a0",
+                          "name": "Api1",
+                          "description": "",
+                          "metrics": {},
+                          "apikey": "4da1e521-5def-11e4-948c-95dda02f15a0",
+                          "uri": "http://advapi.ca.com/vapi/api/dilbert/Api1",
+                          "status": null,
+                          "protocol": "HTTP;REST",
+                          "modified": "2014-10-27 12:27:59",
+                          "created": "2014-10-27 11:38:30",
+                          "documentationText": null,
+                          "public":"true"
+                        }
+                      },
+                      "creationDate": 1414417011583,
+                      "lastLoginDate": 1414428951953,
+                      "loginData": null
+                    }
+                  ]
+                }              
+  /CreatedSinceTime({date}):
+    displayName: Created Since Time 
+    description: Get the number of new users since the specified date. The authenticated user must be a superuser.
+    uriParameters:
+      date:
+        description: The date in yyyy-MM-dd format.
+        type: string
+        example: 1980-01-01
+    is: [ Secured ]
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "",
+                  "returnCode": 0,
+                  "success": true,
+                  "value": 3
+                }
+  /LoginSinceTime({date}):
+    displayName: Login Since Time 
+    description: Get the number of unique users who have logged in since the specified date. The authenticated user must be a superuser.
+    uriParameters:
+      date:
+        description: The date in yyyy-MM-dd format.
+        type: string
+        example: 1980-01-01
+    is: [ Secured ]
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "",
+                  "returnCode": 0,
+                  "success": true,
+                  "value": 3
+                }

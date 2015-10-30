@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE project>
+<?xml-stylesheet type="text/xsl" href="../../ivy-doc.xsl"?>
+<ivy-module version="1.0">
+
+	<!-- Information about your component. Keep casd. prefix. -->
+  <info organisation="com.ca.dvs" module="dvs.utilities.commonUtils">
+  	<extends organisation="com.ca.dvs" module="dvs.build-essentials" revision="latest.integration"
+  		location="../../build-essentials/ivy-common.xml" />
+  </info>
+
+  <configurations>
+    <!-- You can add more configurations than specified in build-essentials/ivy-common.xml if necessary, e.g. if some
+		component depends on your one and should take just a subset of artifacts or dependencies. -->
+  </configurations>
+
+  <publications>
+
+    <artifact name="dvs.utilities.commonUtils" type="pom" ext="pom" conf="default" />
+
+    <!-- Basic product of the build, jar or war file. -->
+    <artifact name="dvs.utilities.commonUtils" type="jar" ext="jar" conf="default" />
+		
+	<!-- Use this if you set install.publish=true in build.properties. The build will create a zip
+	file with a content that the installer should unpack in to $USER_INSTALL_DIR$ . -->
+	<!-- <artifact name="casd.utilities.commonUtils-install" type="resource" ext="zip" conf="install" />	-->
+  </publications>
+
+  <dependencies>
+    <!-- Specify the dependencies of your project. Please use the configurations defined above correctly,
+		so in case some of the dependencies is needed just for runtime, use "runtime" before the arrow,
+		for test-only dependencies there should be "test" before the arrow. -->
+    <dependency org="log4j" name="log4j" rev="${ivy.rev.apache.log4j}" conf="compile,test->default" /> 
+    
+    <!-- This dependency is necessary to run unit test. In case you have some unit tests,	keep it here. -->
+  	<dependency org="junit" name="junit" rev="${ivy.rev.junit.junit}"   conf="test->default"/>
+    
+  </dependencies>
+  
+</ivy-module>

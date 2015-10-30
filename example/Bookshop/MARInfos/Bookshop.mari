@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+
+<MarInfo>
+<name>Bookshop</name>
+<type>VIRTUAL_SERVICE</type>
+<projectRoot>Bookshop</projectRoot>
+<optimized>true</optimized>
+<deployInfo>
+    <PrimaryAsset>VServices/Bookshop.vsm</PrimaryAsset>
+    <Configuration>Configs/project.config</Configuration>
+    <ConcurrentCapacity>1</ConcurrentCapacity>
+    <ThinkTimePercent>100</ThinkTimePercent>
+    <AutoRestart>true</AutoRestart>
+    <StartOnDeploy>true</StartOnDeploy>
+</deployInfo>
+<extraFile>data/EDMToDB.xml</extraFile>
+</MarInfo>

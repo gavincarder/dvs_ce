@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE project>
+<?xml-stylesheet type="text/xsl" href="../../ivy-doc.xsl"?>
+<ivy-module version="1.0">
+
+	<!-- Information about your component. Keep casd. prefix. -->
+  <info organisation="com.ca.dvs" module="dvs.build">
+  	<extends organisation="com.ca.dvs" module="dvs.build-essentials" revision="latest.integration"
+  		location="./build-essentials/ivy-common.xml" />
+  </info>
+
+  <configurations>
+    <!-- You can add more configurations than specified in build-essentials/ivy-common.xml if necessary, e.g. if some
+		component depends on your one and should take just a subset of artifacts or dependencies. -->
+        <conf name="build"/>
+        <conf name="install"/>
+  </configurations>
+
+  <publications>
+  </publications>
+
+  <dependencies>
+    <!-- Specify the dependencies of your project. Please use the configurations defined above correctly,
+		so in case some of the dependencies is needed just for runtime, use "runtime" before the arrow,
+		for test-only dependencies there should be "test" before the arrow. -->
+    <dependency org="log4j" name="log4j" rev="${ivy.rev.apache.log4j}" conf="compile,test->default" /> 
+    
+    <!-- This dependency is necessary to run unit test. In case you have some unit tests,	keep it here. -->
+  	<dependency org="junit" name="junit" rev="${ivy.rev.junit.junit}"   conf="test->default"/>
+  	
+    <dependency org="ant-contrib" name="ant-contrib"        rev="1.0b3"              conf="build->default"/>
+
+    <dependency org="org.jacoco" name="org.jacoco.ant"      rev="0.7.4.201502262128" conf="build->default"/>
+    <dependency org="org.jacoco" name="org.jacoco.agent"    rev="0.7.4.201502262128" conf="build->default"/>
+    <dependency org="org.jacoco" name="org.jacoco.report"   rev="0.7.4.201502262128" conf="build->default"/>
+    <dependency org="org.jacoco" name="org.jacoco.core"     rev="0.7.4.201502262128" conf="build->default"/>
+
+    <dependency org="com.ca.dvs" name="dvs.lisa-extensions.odata" rev="1.0.99999-DEV-SNAPSHOT" conf="install->default" />
+    <dependency org="com.ca.dvs" name="dvs.app.dvs_servlet" rev="1.0.99999-DEV-SNAPSHOT" conf="install->default" />
+    <dependency org="com.ca.dvs" name="dvs.lisa-plugins" rev="1.0.99999-DEV-SNAPSHOT" conf="install->default" />
+    
+  </dependencies>
+  
+</ivy-module>

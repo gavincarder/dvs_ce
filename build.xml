@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="dvs" basedir="." default="all"
+    xmlns:ivy="antlib:org.apache.ivy.ant"
+	xmlns:antcontrib="antlib:net.sf.antcontrib"
+    >
+
+	<property environment="env"/>
+
+	<property name="dir.build" location="." />
+	<property name="ant-filters" value="*/*"/>
+    
+    <taskdef uri="antlib:org.apache.ivy.ant" resource="org/apache/ivy/ant/antlib.xml" />
+    <taskdef uri="antlib:net.sf.antcontrib"  resource="net/sf/antcontrib/antlib.xml"/>
+    
+    <import file="${basedir}/build-essentials/top-level-tasks.xml" />
+
+    <!-- Define default target outside of <if> above, so we have correct build script -->
+    <target name="all" description="Runs the full build: clean, this.build, test, package, publish." >
+        <ant antfile="${basedir}/build-essentials/build.xml" dir="${basedir}/build-essentials" inheritAll="false">
+            <property name="ant-filters" value="${ant-filters}"/>
+        </ant>
+        <ivy:retrieve conf="install" pattern="build\[module]\[artifact].[ext]" type="jar,war,resource" transitive="false"/>
+    </target>   
+
+</project>
+

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Schema xmlns="http://schemas.microsoft.com/ado/2006/04/edm" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" Namespace="JUG-RAML" Version="v1">
+  <EntityType Name="author">
+    <Property Key="true" Name="id" Nullable="false" Type="Edm.Int32"/>
+    <Property Name="name" Type="Edm.String"/>
+    <NavigationProperty Multiplicity="*" Name="books" Relationship="author_book" Type="book"/>
+  </EntityType>
+  <Association DBJoinOn="AUTHOR.ID=AUTHOR_BOOK.AUTHOR, BOOK.ID=AUTHOR_BOOK.BOOK" DBLinkTable="AUTHOR_BOOK" Name="author_book"/>
+  <EntityType Name="author_book">
+    <Property Key="true" Name="author" Nullable="false" Type="Edm.Int32"/>
+    <Property Key="true" Name="book" Nullable="false" Type="Edm.Int32"/>
+  </EntityType>
+  <EntityType Name="book">
+    <Property Key="true" Name="id" Nullable="false" Type="Edm.Int32"/>
+    <Property Name="name" Type="Edm.String"/>
+    <Property Name="isbn" Type="Edm.String"/>
+    <Property Name="author_id" Type="Edm.Int32"/>
+  </EntityType>
+  <EntitySet EntityType="author" Name="authors"/>
+  <EntitySet EntityType="book" Name="books"/>
+</Schema>

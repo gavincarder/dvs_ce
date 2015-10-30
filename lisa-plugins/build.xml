@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<!DOCTYPE project>
+<project name="lisa-plugins" basedir="." default="all"
+        xmlns:ivy="antlib:org.apache.ivy.ant"
+        xmlns:antcontrib="antlib:net.sf.antcontrib">
+	
+  <!-- Import common build script. "dir.build" property needs to be defined as well,
+       since it is used in the common build scripts. -->
+	<property name="dir.build" location="${basedir}/.." />
+	<import file="${dir.build}/build-essentials/imported-from-all.xml" />
+
+    <!-- ================================================================= -->
+    <!-- Define properties -->
+    <!-- ================================================================= -->
+	<property environment="env"/>
+    <property name="LISA_HOME" value="${env.LISA_HOME}" />
+	<property name="Maven.home" value="${env.M2_HOME}" />
+    <property name="artifact.dir" value="updatesite/build" />
+    <property name="dist.dir" value="build/artifacts/resources" />
+    <property name="maven.executable" value="${Maven.home}/bin/mvn.bat" />
+
+    <!-- ================================================================= -->
+    <!-- Set Classpath(s) -->
+    <!-- ================================================================= -->
+    <property name="lisa.bin.dir" value="${LISA_HOME}/bin" />
+    <property name="lisa.lib.dir" value="${LISA_HOME}/lib" />
+    <property name="lisa.hotdeploy.dir" value="${LISA_HOME}/hotDeploy" />
+
+    <!-- Here using t.clean should be enough. It deletes the whole ${build-dir} -->
+    <target name="clean" depends="t.clean">
+        <maven basedir="." goal="clean"/>
+        <delete dir="${dist.dir}" />
+	<delete dir="odata-assistant/build" />
+	<delete dir="odata-assistant/bin" />
+    </target>
+
+    <target name="get-dependencies">
+        <ivy:retrieve conf="default" pattern="odata-assistant\lib\[artifact].[ext]" type="bundle,jar" />
+    </target>
+
+    <!--
+	Use this target to compile java classes. If you do not need any special handling, depending on t.build
+	is sufficient. The result of this are class files in ${build-dir}/classes. "compile" ivy dependencies are used
+	for the build.
+    -->
+    <target name="this.build" depends="t.build, get-dependencies">
+        <maven basedir="." goal="verify" />
+	<mkdir dir="${dist.dir}" />
+        <copy todir="${dist.dir}">
+		<fileset dir="${artifact.dir}" />
+	</copy>
+    </target>
+    
+	<!--
+	Runs unit tests that are present in test/java. test ivy dependencies are used, there is
+	jmockit and junit required (see ivy.xml in this empty project).
+	The results of the test are stored in ${build-dir}, together with code coverage of the java
+	sources.
+	-->
+    <target name="test" depends="t.test">
+	</target>
+
+	<!--
+	Creates a resulting jar or war file, should depend on the build target.
+	By default, depending on t.prepare-package and t.package is sufficient. These two tasks are split to allow
+	for modifications in what is then packaged.
+	
+	See ${to-package-dir}, ${install-dir}, ${resources-to-package-dir} explanation above.
+	-->
+    <target name="package" depends="t.prepare-package, t.package">
+	</target>
+
+  <!--
+	Publishes the artifacts to a local repository located in build-essentials/local-repo. Only the build
+	machine publishes to isl-ivy.
+	This task assumes that all the artifacts defined in ivy.xml in <publications ...> section are present
+	in ${build-dir}/dist directory at this time.
+	-->
+	<target name="publish" depends="t.publish">
+	</target>
+	
+</project>
+	

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<NIM_AEDM Version="1.0">
+
+<EntityType Name="Incident" DBTable="INCIDENT">
+ 	<Property Name="IncidentId" Type="Edm.String" Length="16" DBColumn="INCIDENT_ID" Key="true"/>
+	<Property Name="IncidentDescription" Type="Edm.String" Length="2048" DBColumn="INCIDENT_DESCRIPTION"/>
+	<Property Name="IncidentSeverity" Type="Edm.String" Length="32" DBColumn="INCIDENT_SEVERITY"/>
+	<Property Name="IncidentUpdateby" Type="Edm.String" Length="64" DBColumn="INCIDENT_UPDATEBY"/>
+   	<NavigationProperty Name="Comments" Type="Comment" Relationship="Incident_Comment" Multiplicity="*" />
+</EntityType>
+
+<EntityType Name="Comment" DBTable="COMMENT">
+ 	<Property Name="CommentId" Type="Edm.String" Length="16" DBColumn="COMMENT_ID" Key="true"/>
+	<Property Name="CommentText" Type="Edm.String" Length="2048" DBColumn="COMMENT_TEXT"/>
+	<Property Name="CommentType" Type="Edm.String" Length="64" DBColumn="COMMENT_TYPE"/>
+	<Property Name="IncidentId" Type="Edm.String" Length="64" DBColumn="INCIDENT_ID"/>
+	<NavigationProperty Name="Incident" Type="Incident"  Relationship="Incident_Comment" Multiplicity="0..1" />
+</EntityType>
+
+<EntityType Name="Customer" DBTable="CUSTOMER">
+ 	<Property Name="CustomerId" Type="Edm.Int32" Length="" DBColumn="CUSTOMER_ID" Key="true"/>
+ 	<Property Name="ExtraCustomerId" Type="Edm.Int64" Length="" DBColumn="EXTRA_CUSTOMER_ID"/>
+	<Property Name="BirthDate" Type="Edm.DateTime" Length="" DBColumn="BIRTH_DATE"/>
+	<Property Name="FirstName" Type="Edm.String" Length="64" DBColumn="FIRST_NAME"/>
+	<Property Name="LastName" Type="Edm.String" Length="64" DBColumn="LAST_NAME"/>
+	<Property Name="VIP" Type="Edm.Boolean" Length="" DBColumn="VIP"/>
+	<Property Name="InComming" Type="Edm.Float" Length="" DBColumn="IN_COMING"/>
+	<Property Name="Outing" Type="Edm.Double" Length="" DBColumn="OUTING"/>
+</EntityType>
+  
+<EntitySet Name="Incidents" EntityType="Incident" />
+<EntitySet Name="Comments" EntityType="Comment" />
+<EntitySet Name="Customers" EntityType="Customer" />
+
+<Association Name="Incident_Comment" DBLinkTable="COMMENT" DBJoinOn="COMMENT.INCIDENT_ID=INCIDENT.INCIDENT_ID">
+</Association>
+
+</NIM_AEDM>

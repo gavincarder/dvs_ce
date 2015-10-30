@@ -1,0 +1,847 @@
+<?xml version="1.0"?>
+<project name="buildTemplate" xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:jacoco="antlib:org.jacoco.ant">
+
+	<property environment="env" />
+	<dirname property="template-basedir" file="${ant.file.buildTemplate}" />
+
+	<import file="${template-basedir}/buildCommon.xml" />
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+
+    <!-- Load local property file (if exists)
+    Note, this file is NOT registered in RTC!!!!
+    development environment.
+    (e.g. path to deployment folder of your local servlet container etc.)
+    Note, all configuration options have to be mentioned in build.properties
+    file as well in order to keep a list of all available options.
+    Example how to define system local properties is below:
+    
+    Content of build.properties:
+        # Type of the artifact, one of (jar,war)
+        project.type=war
+
+        # If this property is set to yes, the <artifact-name>-install.zip file will be made
+        # during the compilation. And if this artifact is present in ivy.xml it will be published
+        # to IVY. Se to false (it is just a dependency
+        # for others)
+        install.publish=true
+
+        #Path to deployment folder. (This is SYSTEM LOCAL PROPERTY)
+        #You have to set this variables otherwise 'ant deploy' command won't work.
+        #This is system local variable so it belongs to your build.properties.local
+        #file. as values can be different on each system
+        #example:
+        #deploy_destinationMachine=rejto01-win64
+        #deploy_destinationSOIpath=c$\\Program Files (x86)\\CA\\SOI
+        
+    Content of build.properties.local:
+        #This file holds configuration options specific for this (local) system only.
+        
+        #Setup deployment folder
+        deploy_destinationMachine=machineXY.ca.com
+        deploy_destinationSOIpath=E$\\Program Files\\CA\\SOI
+    -->
+    <echo level="info">Loading '${current-basedir}/build.properties.local' file</echo>
+	<property file="${current-basedir}/build.properties.local" />
+	<!-- Load properties specific for this build -->
+	<loadproperties srcfile="${current-basedir}/build.properties" />
+	
+	<ivy:info file="${current-basedir}/ivy.xml" />
+
+    <presetdef name="javac">
+        <javac debug="true" includeAntRuntime="false"/>
+    </presetdef>
+
+<!-- The following takes the ivy.module and removed everythying up to and including the first '.' -->
+<!--	<propertyregex property="artifact.basename.ivy"
+              input="${ivy.module}"
+              regexp="[^\.]*\.(.*)"
+              select="\1"
+              casesensitive="false" />
+              -->
+	<property name="artifact.basename.ivy" value="${ivy.module}" />
+	
+	<if>
+		<isset property="main.artifact.name" />
+		<then>
+			<property name="artifact.basename" value="${main.artifact.name}" />
+		</then>
+		<else>
+			<property name="artifact.basename" value="${artifact.basename.ivy}" />
+		</else>
+	</if>
+
+	<!-- Properties with directories and artifact names used by the individual builds -->
+	<property name="build-dir" value="${current-basedir}/build" />
+	<property name="to-package-dir" value="${build-dir}/dist/to-package" />
+	<property name="to-package-lgpl-dir" value="${build-dir}/dist/to-package-lgpl" />
+	<property name="install-dir" value="${build-dir}/install" />
+	<property name="install-lgpl-dir" value="${build-dir}/install-lgpl" />
+	<property name="module-name" value="${ivy.module}" />
+	<property name="artifact-name" value="${artifact.basename}.${project.type}" />
+	<property name="artifact-lgpl-name" value="${artifact.basename}.lgpl.${project.type}" />
+	<property name="artifact-doc-name" value="${artifact.basename.ivy}.doc.${project.type}" />
+	<property name="artifact-osgi-name" value="${artifact.basename}.osgi.${project.type}" />
+	<property name="artifact-resources-name" value="${artifact.basename.ivy}-resources.zip" />
+	<property name="artifact-install-name" value="${artifact.basename.ivy}-install.zip" />
+	<property name="artifact-install-lgpl-name" value="${artifact.basename.ivy}-lgpl-install.zip" />
+	<property name="resources-to-package-dir" value="${build-dir}/dist/resources-to-package" />
+	<property name="temp-dir" value="${build-dir}/dist/tmp" />
+	<property name="coverage-dir" value="${build-dir}/coverage" />
+	<property name="coveragereport-dir" value="${build-dir}/coverage-report" />		
+
+	<condition property="project-type-is-jar">
+		<or>
+			<equals arg1="${project.type}" arg2="jar" />
+			<equals arg1="${project.type}" arg2="aar" />
+		</or>
+	</condition>
+	<condition property="project-type-is-war">
+		<equals arg1="${project.type}" arg2="war" />
+	</condition>
+	<condition property="project-type-is-resource">
+		<equals arg1="${project.type}" arg2="resource" />
+	</condition>
+
+	<condition property="package-osgi-bundle">
+		<equals arg1="${package.osgi}" arg2="true" />
+	</condition>
+
+	<!-- Sets the DSTAMP, TSTAMP, and TODAY properties in the current project -->
+	<tstamp />
+	
+    <if> <!-- if property Maven.Home is not set, try to set it from environment variable M2_HOME -->
+        <not>
+            <isset property="maven.home"/>
+        </not>
+        <then>
+            <if>
+                <isset property="env.M2_HOME"/>
+                <then>
+                    <property name="maven.home" value="${env.M2_HOME}" />
+                </then>
+            </if>
+        </then>
+    </if>
+
+    <if> <!-- if property LISA_HOME is not set, try to set it from environment variable LISA_HOME -->
+		<not>
+			<isset property="LISA_HOME"/>
+		</not>
+		<then>
+			<if>
+				<isset property="env.LISA_HOME"/>
+				<then>
+					<property name="LISA_HOME" value="${env.LISA_HOME}" />
+				</then>
+			</if>
+		</then>
+	</if>
+	
+	<if> <!-- Give user some indication of whether lisa.home is set properly or not. -->
+		<available file="${LISA_HOME}" />
+		<then>
+			<echo level="info">LISA_HOME (${LISA_HOME}) is present.</echo>
+		</then>
+		<else>
+			<echo level="info">LISA_HOME (${LISA_HOME}) is not present.</echo>
+		</else>
+	</if>
+			
+    <macrodef name="maven">
+      <attribute name="options" default="-e" />
+      <attribute name="goal" />
+      <attribute name="basedir" />
+      <attribute name="resultproperty" default="maven.result" />
+      <element name="args" implicit="true" optional="true" />
+      <sequential>
+        <java classname="org.codehaus.classworlds.Launcher" fork="true"
+              dir="@{basedir}" resultproperty="@{resultproperty}">
+          <jvmarg value="-Xmx512m"/>
+          <classpath>
+            <fileset dir="${maven.home}/boot">
+              <include name="*.jar" />
+            </fileset>
+            <fileset dir="${maven.home}/lib">
+              <include name="*.jar" />
+            </fileset>
+          </classpath>
+          <sysproperty key="classworlds.conf" value="${maven.home}/bin/m2.conf" />
+          <sysproperty key="maven.home" value="${maven.home}" />
+          <sysproperty key="maven.multiModuleProjectDirectory" value="" /> <!-- otherwise, Maven 3.3.1 error complaining that it's not set -->
+          <arg line="--batch-mode @{options} @{goal}" />
+        </java>
+      </sequential>
+    </macrodef>
+	
+	<target name="_resolve-only">
+		<ivy:resolve conf="*" file="${current-basedir}/ivy.xml" />
+	</target>
+
+	<target name="t.resolve" depends="_resolve-only">
+		<ivy:cachepath pathid="cachepath.compile" conf="compile" type="jar,bundle,osgi-module" />
+		<ivy:cachepath pathid="cachepath.test" conf="test" type="jar,bundle,osgi-module" />
+		<ivy:cachepath pathid="cachepath.runtime" conf="runtime" type="jar,bundle,osgi-module" />
+		<ivy:cachepath pathid="cachepath.install" conf="install" />
+		<mkdir dir="${build-dir}/ivy-report" />
+		<ivy:report todir="${build-dir}/ivy-report" conf="*" graph="true" />
+		<!-- zip it so it can be taken by the build machine and delivered to TC -->
+		<zip destfile="${build-dir}/${module-name}-ivy-report.zip" basedir="${build-dir}/ivy-report" />
+
+		<!-- TODO: Flat list of artifact used and shipped, but this causes an error of resolving multiple items to a single
+		     file, need to look into it. -->
+		<!-- ivy:artifactreport tofile="${build-dir}/artifactreport.xml" conf="compile,runtime,default" / -->    	
+
+		<trycatch>
+			<try>
+				<!-- some projects have long classpath, we build these jars to simplify addition of dependencies
+				to the classpath -->
+				<manifestclasspath property="compile.manifest.classpath" jarfile="${build-dir}/path-compile.jar" maxParentLevels="100">
+					<classpath refid="cachepath.compile" />
+				</manifestclasspath>
+				<jar destfile="${build-dir}/path-compile.jar">
+					<manifest>
+						<attribute name="Class-Path" value="${compile.manifest.classpath}"/>
+					</manifest>
+				</jar>
+
+				<manifestclasspath property="runtime.manifest.classpath" jarfile="${build-dir}/path-runtime.jar" maxParentLevels="100">
+					<classpath refid="cachepath.runtime" />
+				</manifestclasspath>
+				<jar destfile="${build-dir}/path-runtime.jar">
+					<manifest>
+						<attribute name="Class-Path" value="${runtime.manifest.classpath}"/>
+					</manifest>
+				</jar>
+
+				<manifestclasspath property="test.manifest.classpath" jarfile="${build-dir}/path-test.jar" maxParentLevels="100">
+					<classpath refid="cachepath.test" />
+				</manifestclasspath>
+				<jar destfile="${build-dir}/path-test.jar">
+					<manifest>
+						<attribute name="Class-Path" value="${test.manifest.classpath}"/>
+					</manifest>
+				</jar>
+			</try>
+			<catch>
+				<echo />
+				<echo>There are two known options when this might fail:</echo>
+				<echo>1) The path-*.jar file is open in other program. Don't you have a debug session in Eclipse running?</echo>
+				<echo>2) Please make sure you have IVY cache on the same disk as you build the project, so a relative path to the dependency jar files in the cache can be constructed.</echo>
+				<echo>   Ivy cache defaults to your home folder, which is usually on drive C:, if you develop on some other drive, you need to specify IVY_CACHE environment variable pointing to a folder on the same drive.</echo>
+
+				<fail message="Cannot construct a jar file with dependencies specified in a manifest. See the message above." />
+			</catch>
+		</trycatch>
+
+	</target>
+
+	<available file="${current-basedir}/src/java" property="java-src-present" />
+	<target name="_build-src-java" depends="t.resolve" if="java-src-present">
+		<mkdir dir="${build-dir}/classes" />
+	    <if>
+		    <equals arg1="${build.type}" arg2="maven"/>
+	        <then>
+	        	<echo>Maven Build Type</echo>
+                <maven basedir="${basedir}"
+                       goal="compile"
+                       resultproperty="maven.build.result"/>
+	        	<echo>maven.build.result=${maven.build.result}</echo>
+	        	<fail message="Maven Build Failed" if="maven.build.result" />
+	        </then>
+	        <else>
+                <echo>Java Build Type</echo>
+	            <javac srcdir="${current-basedir}/src/java" destdir="${build-dir}/classes"
+	                debug="on" deprecation="on" classpathref="classpath.compile.src"
+	                optimize="off" includes="*/**" encoding="UTF-8" includeAntRuntime="false"/>
+	            <copy todir="${build-dir}/classes">
+	                <fileset dir="${current-basedir}/src" includes="java/**/*" excludes="**/*.java" />
+	                <cutdirsmapper dirs="1"/>
+	            </copy>
+	        </else>
+	    </if>
+	</target>
+
+	<available file="${current-basedir}/test/java" property="unit-test-present" />
+	<target name="_build-test-java" depends="t.resolve" if="unit-test-present">
+		<mkdir dir="${build-dir}/test-classes" />
+        <if>
+            <equals arg1="${build.type}" arg2="maven"/>
+            <then>
+                <echo>Maven Build Type</echo>
+                <maven basedir="${basedir}"
+                       goal="test-compile"
+                       resultproperty="maven.build.result"/>
+                <echo>maven.build.result=${maven.build.result}</echo>
+                <fail message="Maven Build Failed" if="mavel.build.result" />
+            </then>
+            <else>
+                <echo>Java Build Type</echo>
+                <javac srcdir="${current-basedir}/test/java" destdir="${build-dir}/test-classes"
+                    debug="on" deprecation="on"
+                    optimize="off" includes="**/*" encoding="UTF-8" includeAntRuntime="false">
+                    <classpath>
+                        <path refid="classpath.compile.src" />
+                        <pathelement path="${build-dir}/classes"/>
+                        <pathelement location="${build-dir}/path-test.jar"/>
+                    </classpath>
+                </javac>
+                <copy todir="${build-dir}/test-classes">
+                    <fileset dir="${current-basedir}/test/java">
+                        <exclude name="**/*.java" />
+                    </fileset>
+                </copy>
+                <copy todir="${build-dir}/test-classes">
+                    <fileset dir="${current-basedir}/test">
+                        <include name="resources/**/*" />
+                    </fileset>
+                    <cutdirsmapper dirs="1"/>
+                </copy>
+            </else>
+        </if>
+	</target>
+
+	<target name="t.build" depends="_build-src-java,_build-test-java">
+	</target>
+
+	<target name="_check-zip-resources-exist">
+		<condition property="zip-resources-exist">
+			<available file="${resources-to-package-dir}" type="dir"/>
+		</condition>
+	</target>
+	<target name="_zip-resources" depends="_check-zip-resources-exist" if="zip-resources-exist">
+		<delete file="${build-dir}/artifacts/resources/${artifact-resources-name}">
+		</delete>
+		<mkdir dir="${build-dir}/artifacts/resources" />
+		<zip destfile="${build-dir}/artifacts/resources/${artifact-resources-name}"
+			basedir="${resources-to-package-dir}">
+		</zip>
+	</target>
+
+	<target name="t.prepare-package" depends="_prepare-package-jar, _prepare-package-war, _prepare-package-resources">
+		<mkdir dir="${install-dir}"/>
+		<mkdir dir="${install-lgpl-dir}"/>
+		
+		<copy todir="${install-dir}">
+			<fileset dir="${current-basedir}" includes="resources/**/*" />
+			<cutdirsmapper dirs="1"/>
+		</copy>
+	</target>
+
+	<condition property="include-source-to-jar">
+		<equals arg1="${include.source}" arg2="true" />
+	</condition>
+	<target name="_package-jar" if="project-type-is-jar" depends="t.create-manifest">
+		<delete file="${build-dir}/artifacts/${project.type}s/${artifact-name}">
+		</delete>
+
+		<mkdir dir="${build-dir}/artifacts/${project.type}s" />
+		<mkdir dir="${build-dir}/classes"/>
+        <if>
+            <equals arg1="${build.type}" arg2="maven"/>
+            <then>
+                <echo>Maven Build Type</echo>
+            	<echo>Nothing to do (for now)...</echo>
+            </then>
+            <else>
+                <echo>Java Build Type</echo>
+                <jar destfile="${build-dir}/artifacts/${project.type}s/${artifact-name}" manifest="${build-dir}/classes/META-INF/MANIFEST.MF">
+                    <fileset dir="${build-dir}/classes"/>
+                    <fileset dir="${to-package-dir}" />
+                    <fileset dir="${current-basedir}/src/java">
+                        <include name="**/*.java" if="include-source-to-jar" />
+                        <exclude name="**/*" unless="include-source-to-jar" />
+                    </fileset>
+                </jar>
+            </else>
+        </if>
+	</target>
+
+	<target name="check-manifest" if="package-osgi-bundle">
+		<condition property="manifest-present">
+			<available file="${to-package-dir}/META-INF/MANIFEST.MF" />
+		</condition>
+		<fail message="Trying to build OSGi bundle, but no manifest is present in &lt;project&gt;/src/resources/META-INF/MANIFEST.MF" unless="manifest-present"/>
+	</target>
+	
+	<target name="_package-osgi" if="package-osgi-bundle" depends="check-manifest,t.create-manifest">
+		<delete file="${build-dir}/artifacts/${project.type}s/${artifact-osgi-name}">
+		</delete>
+
+		<mkdir dir="${build-dir}/artifacts/${project.type}s" />
+		<mkdir dir="${build-dir}/classes"/>
+
+		<mkdir dir="${temp-dir}/osgi-deps"/>
+		<ivy:retrieve conf="osgi" type="jar,bundle" pattern="${temp-dir}/osgi-deps/lib/[artifact].[ext]"/>
+
+		<jar destfile="${build-dir}/artifacts/${project.type}s/${artifact-osgi-name}" filesetmanifest="merge" manifest="${build-dir}/classes/META-INF/MANIFEST.MF">
+			<fileset dir="${build-dir}/classes"/>
+			<fileset dir="${to-package-dir}" />
+			<!-- OSGi specific - don't include manifest, it should be present in ${to-package-dir} -->
+			<!-- Also, copy all the dependencies from "osgi" configuration to /lib directory -->
+			<fileset dir="${temp-dir}/osgi-deps" />
+		</jar>
+	</target>
+
+	<target name="_package-war" if="project-type-is-war" depends="t.create-manifest">
+		<delete file="${build-dir}/artifacts/${project.type}s/${artifact-name}" />
+		<mkdir dir="${build-dir}/artifacts/${project.type}s" />
+		<jar destfile="${build-dir}/artifacts/${project.type}s/${artifact-name}" basedir="${to-package-dir}" manifest="${build-dir}/classes/META-INF/MANIFEST.MF" />
+		
+		<!-- and lgpl version -->
+		<delete file="${build-dir}/artifacts/${project.type}s/${artifact-lgpl-name}" />
+		<mkdir dir="${build-dir}/artifacts/${project.type}s" />
+		<zip destfile="${build-dir}/artifacts/${project.type}s/${artifact-lgpl-name}" basedir="${to-package-lgpl-dir}" />
+	</target>
+
+	<target name="t.package" depends="_zip-resources,_package-jar,_package-osgi,_package-war">
+	</target>
+
+	<condition property="install-libs-and-publish-true">
+		<and>
+			<equals arg1="${install.publish}" arg2="true" />
+			<isset property="install.libs" />
+			<not>
+				<equals arg1="${install.libs}" arg2="" />
+			</not>
+		</and>
+	</condition>
+	<target name="_copy_libs_to_install" if="install-libs-and-publish-true">
+		<!-- Copy the result of the build, if present -->
+        <copy todir="${install-dir}/${install.artifact}">
+            <fileset dir="${build-dir}/artifacts" includes="${project.type}s/${artifact-name}" />
+            <cutdirsmapper dirs="1"/>
+        </copy>
+		
+		<!-- As well as all the dependencies -->
+		<ivy:retrieve pattern="${install-dir}/${install.libs}/[artifact].[ext]" type="jar,bundle" conf="runtime" />
+		<!-- Ideally, we should be able to use configuration intersection "runtime+lgpl" instead of getting all
+		     the lgpl and then deleting what is not needed, but we are missing some jar files (hibernate) if we do so. -->
+		<ivy:retrieve pattern="${install-lgpl-dir}/${install.libs}/[artifact].[ext]" type="jar,bundle" conf="lgpl" />
+		<delete>
+		    <fileset dir="${install-lgpl-dir}/${install.libs}" erroronmissingdir="false">
+		        <present present="srconly" targetdir="${install-dir}/${install.libs}" />
+		    </fileset>
+		</delete>
+
+		<!-- And delete those dependencies that are in normal install-dir, which are lgpl -->		
+		<delete>
+		    <fileset dir="${install-dir}/${install.libs}" erroronmissingdir="false">
+		        <present present="both" targetdir="${install-lgpl-dir}/${install.libs}"/>
+		    </fileset>
+		</delete>
+	</target>
+
+	<condition property="install-libs">
+		<equals arg1="${install.publish}" arg2="true" />
+	</condition>
+
+	<target name="_copy_install_dependencies_to_install" if="install-libs">
+		<ivy:cachepath pathid="install.zips.to.combine" conf="install" type="resource" />
+		<unzip dest="${install-dir}">
+			<path refid="install.zips.to.combine" />
+		</unzip>
+		<ivy:cachepath pathid="install.lgpl.zips.to.combine" conf="install-lgpl" type="resource" />
+		<unzip dest="${install-lgpl-dir}">
+			<path refid="install.lgpl.zips.to.combine" />
+		</unzip>
+	</target>
+	
+	<condition property="project-type-is-war-and-copy-wars-to-install">
+		<and>
+			<equals arg1="${project.type}" arg2="war" />
+			<isset property="install.war.location" />
+		</and>
+	</condition>
+    
+	<target name="_copy_this_war_to_install" if="project-type-is-war-and-copy-wars-to-install">
+		<copy todir="${install-dir}/${install.war.location}" file="${build-dir}/artifacts/${project.type}s/${artifact-name}" />
+		<copy todir="${install-lgpl-dir}/${install.war.location}" file="${build-dir}/artifacts/${project.type}s/${artifact-lgpl-name}" />
+	</target>
+    
+	<target name="_package-install" depends="_copy_libs_to_install,_copy_install_dependencies_to_install,_copy_this_war_to_install" if="install-libs">
+		<mkdir dir="${build-dir}/artifacts/resources" />
+		<zip destfile="${build-dir}/artifacts/resources/${artifact-install-name}" basedir="${install-dir}" />
+		<zip destfile="${build-dir}/artifacts/resources/${artifact-install-lgpl-name}" basedir="${install-lgpl-dir}" />
+	</target>
+
+	<target name="_clean-to-package">
+		<delete dir="${to-package-dir}" />
+		<mkdir dir="${to-package-dir}" />
+
+		<delete dir="${to-package-lgpl-dir}" />
+		<mkdir dir="${to-package-lgpl-dir}" />
+	</target>
+
+	<target name="_prepare-package-jar" depends="_clean-to-package" if="project-type-is-jar">
+		<copy todir="${to-package-dir}">
+			<!-- Do not copy classes, it takes time and they are included always anyway... Include them directly from classes directory. -->
+			<!-- fileset dir="${build-dir}" includes="classes/**/*" / -->
+			<fileset dir="${current-basedir}" includes="src/resources/**/*" />
+			<cutdirsmapper dirs="2"/>
+		</copy>
+	</target>
+
+	<target name="_prepare-package-war" depends="_clean-to-package,_jar-classes-to-web-inf-lib" if="project-type-is-war">
+		<copy todir="${to-package-dir}">
+			<fileset dir="${current-basedir}">
+				<include name="web-resources/**/*" />
+				<exclude name="web-resources/WEB-INF/lib/**"/>
+			</fileset>
+			<cutdirsmapper dirs="1"/>
+		</copy>
+
+		<mkdir dir="${to-package-dir}/WEB-INF/classes" />
+		<copy todir="${to-package-dir}/WEB-INF/classes" includeEmptyDirs="false">
+			<fileset dir="${current-basedir}/src" includes="resources/**/*" />
+			<fileset dir="${current-basedir}/src" includes="java/**/*" excludes="**/*.java" />
+			<cutdirsmapper dirs="1"/>
+		</copy>
+
+		<!-- Package dependencies as well - jar files to WEB-INF/lib -->
+		<mkdir dir="${to-package-dir}/WEB-INF/lib" />
+		<ivy:retrieve pattern="${to-package-dir}/WEB-INF/lib/[artifact].[ext]" type="jar,bundle" conf="runtime" />
+		<mkdir dir="${to-package-lgpl-dir}/WEB-INF/lib" />
+		<!-- Ideally, we should be able to use configuration intersection "runtime+lgpl" instead of getting all
+		     the lgpl and then deleting what is not needed, but we are missing some jar files (hibernate) if we do so. -->
+		<ivy:retrieve pattern="${to-package-lgpl-dir}/WEB-INF/lib/[artifact].[ext]" type="jar,bundle" conf="lgpl" />
+		<delete>
+		    <fileset dir="${to-package-lgpl-dir}/WEB-INF/lib" erroronmissingdir="false">
+		        <present present="srconly" targetdir="${to-package-dir}/WEB-INF/lib" />
+		    </fileset>
+		</delete>
+
+		<!-- And delete those dependencies that are in normal to-package-dir, which are lgpl -->
+		<delete>
+		    <fileset dir="${to-package-dir}/WEB-INF/lib" erroronmissingdir="false">
+		        <present present="both" targetdir="${to-package-lgpl-dir}/WEB-INF/lib"/>
+		    </fileset>
+		</delete>
+
+		<!-- war files copied over -->
+		<ivy:cachepath pathid="wars.to.combine" conf="runtime" type="war" />
+		<propertyregex property="wars.to.combine.comma.separated" input="${toString:wars.to.combine}"
+		               regexp=";" replace="," global="true" defaultValue="${toString:wars.to.combine}" />
+		<ivy:cachepath pathid="wars.lgpl.to.combine" conf="runtime+lgpl" type="war" />
+		<propertyregex property="wars.lgpl.to.combine.comma.separated" input="${toString:wars.lgpl.to.combine}"
+		               regexp=";" replace="," global="true" defaultValue="${toString:wars.lgpl.to.combine}" />
+		
+		<!-- We need to exclude zip files that are marked as lgpl  -->
+		<unzip dest="${to-package-dir}">
+			<files includes="${wars.to.combine.comma.separated}" excludes="${wars.lgpl.to.combine.comma.separated}"/>
+		</unzip>
+
+		<!-- Any lgpl resources to a separate war -->
+		<unzip dest="${to-package-lgpl-dir}">
+			<path refid="wars.lgpl.to.combine"/>
+		</unzip>
+		
+		<!-- And resources to WEB-INF/classes, so they are on classpath -->
+		<mkdir dir="${to-package-dir}/WEB-INF/classes" />
+		<ivy:cachepath pathid="resources.to.combine" conf="runtime" type="resource" />
+		<unzip dest="${to-package-dir}/WEB-INF/classes">
+			<path refid="resources.to.combine"/>
+		</unzip>
+	</target>
+
+	<target name="_check-if-some-classes-present">
+		<fileset id="classes-files" dir="${build-dir}" includes="classes/**/*.class"/>
+		<condition property="some-classes-present">
+			<not>
+				<equals arg1="" arg2="${toString:classes-files}"/>
+			</not>
+		</condition>
+		<condition property="project-type-is-war-and-some-classes-present">
+			<and>
+				<isset property="some-classes-present" />
+				<isset property="project-type-is-war" />
+			</and>
+		</condition>
+	</target>
+
+	<target name="_jar-classes-to-web-inf-lib" depends="_check-if-some-classes-present" if="project-type-is-war-and-some-classes-present">
+		<!-- Make a jar file in lib directory instead of individual classes -->
+		<mkdir dir="${to-package-dir}/WEB-INF/lib" />
+		<jar destfile="${to-package-dir}/WEB-INF/lib/${module-name}.jar" basedir="${build-dir}/classes" />
+	</target>
+
+	<target name="_prepare-package-resources">
+		<mkdir dir="${resources-to-package-dir}" />
+		<delete>
+			<fileset dir="${resources-to-package-dir}" includes="**/*" />
+		</delete>
+		<copy todir="${resources-to-package-dir}">
+			<fileset dir="${current-basedir}" includes="resources/**/*" />
+			<cutdirsmapper dirs="1"/>
+		</copy>
+	</target>
+
+	<target name="_clean_maven_target" >
+        <delete dir="target" quiet="true" />
+	</target>
+
+	<available file="${build-dir}" property="build-dir-present" />
+	<!--<target name="t.clean" if="build-dir-present">-->
+	<target name="t.clean" depends="_clean_maven_target">
+		<!-- Do not fail the build because deleting build directory fails. Deleting all the files in the tree should be
+		sufficient. We frst try to delete everything, and if some directory is locked, we delete just files, to make
+		sure there is no file locked that cannot be deleted. -->
+		<delete dir="${build-dir}" quiet="true" />
+		<delete>
+			<fileset dir="${current-basedir}" includes="build/**" />
+		</delete>
+	</target>
+
+	<!-- JUnit Tests -->
+	<target name="_test-present-message" unless="unit-test-present">
+		<echo level="info">No unit tests present, skipping test step.</echo>
+	</target>
+
+	<target name="_test-setup-jacco">
+		<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+	      <classpath path="${env.ANT_HOME}/lib/org.jacoco.agent.jar"/>
+	      <classpath path="${env.ANT_HOME}/lib/org.jacoco.ant.jar"/>
+	      <classpath path="${env.ANT_HOME}/lib/org.jacoco.core.jar"/>
+	      <classpath path="${env.ANT_HOME}/lib/org.jacoco.report.jar"/>
+		</taskdef>
+	</target>
+	
+	<target name="t.test" depends="_test-present-message, _test-setup-jacco" if="unit-test-present">
+		<mkdir dir="${build-dir}/test-reports/junit" />
+		<!-- Copy all the libs in a directory, for two reasons:
+			1) We need a reference to jmockit JAR as JVM argument
+			2) We can use wildcard to pass all the libraries to avoid long command-line issues
+		-->
+
+		<ivy:retrieve organisation="org.jmockit" module="jmockit" inline="true" revision="${ivy.rev.org.jmockit.jmockit}" conf="default" pattern="${build-dir}/lib/test/[artifact].[ext]"/>
+		<ivy:retrieve organisation="junit" module="junit" inline="true" revision="${ivy.rev.junit.junit}" conf="default" pattern="${build-dir}/lib/test/[artifact].[ext]"/>
+		<delete file="${build-dir}/lib/test/jmockit-hibernate3emul.jar"/>
+		<mkdir dir="${build-dir}/junit-working-dir" />
+
+		<!-- this can be overridden before calling t.test, if some additional parameters are needed for test JVM -->
+		<property name="test_jvmarg" value="" />
+		
+		<if>
+			<isfalse value="${skip.reports}"/>
+			<then>
+				<jacoco:agent property="jacoco.agent.vmparam" destfile="${coverage-dir}/jacoco.exec"/>
+			</then>
+			<else>
+				<echo>Skipping jacaco instrumentation...</echo>
+				<property name="jacoco.agent.vmparam" value="" />
+			</else>
+		</if>
+		
+		<junit fork="yes" printsummary="withOutAndErr" forkmode="once"
+				failureproperty="test.failed" dir="${build-dir}/junit-working-dir" timeout="1200000">
+				<jvmarg value="-XX:-UseSplitVerifier" /><!-- To make JMockit work with Java7 -->
+				<!--<jvmarg value="-javaagent:${build-dir}/lib/test/jmockit.jar=coverage=nothing:::../../src/java" />-->
+				<jvmarg value="${jacoco.agent.vmparam}" />
+	            <jvmarg value="-Xmx1g" />
+				<jvmarg value="-DLISA_HOME=${LISA_HOME}"/>
+				<jvmarg value="-Djava.library.path=${LISA_HOME}/bin"/>
+				<sysproperty key="ddme.dataSource"       value="${ddme.dataSource}" />
+                <sysproperty key="ddme.dataSource.model" value="${ddme.dataSource.model}" />
+				<sysproperty key="ddme.dataSource.user"  value="${ddme.dataSource.user}" />
+				<sysproperty key="ddme.dataSource.pswd"  value="${ddme.dataSource.pswd}" />
+				<sysproperty key="ddme.dataSetName"      value="${ddme.dataSetName}" />
+	            <jvmarg value="${test_jvmarg}" />
+				<classpath>
+					<pathelement location="${build-dir}/lib/test/junit.jar"/>
+					<pathelement location="${build-dir}/lib/test/*"/>
+					<pathelement location="${build-dir}/test-classes" />
+					<pathelement location="${build-dir}/classes" />
+					<pathelement location="${current-basedir}/src/resources" />
+					<pathelement location="${current-basedir}/test/resources" />
+					<pathelement location="${current-basedir}/resources" />
+					<pathelement location="${current-basedir}/web-resources/WEB-INF/classes" />
+					<!--<path refid="classpath.compile.src" />-->
+					<pathelement path="${build-dir}/classes"/>
+					<pathelement location="${build-dir}/path-test.jar"/>
+				</classpath>
+				<formatter type="xml" />
+				<batchtest todir="${build-dir}/test-reports/junit">
+					<fileset dir="${current-basedir}/test/java">
+						<include name="**/*Test.java" />
+					</fileset>
+				</batchtest>
+		</junit>
+		
+		<if>
+			<isfalse value="${skip.reports}"/>
+			<then>
+				<junitreport todir="${build-dir}/test-reports/junit">
+					<fileset dir="${build-dir}/test-reports/junit">
+						<include name="TEST-*.xml" />
+					</fileset>
+					<report format="frames" todir="${build-dir}/test-reports/junit" />
+				</junitreport>
+			</then>
+			<else>
+				<echo>Skipping junit report generation...</echo>
+			</else>
+		</if>
+
+		<fail if="test.failed" message="Build failed because some tests in ${module-name} failed." />
+	</target>
+	
+	<target name="t.coverage-report" depends="_test-setup-jacco">
+		<jacoco:report>
+	        <executiondata>
+	            <file file="${coverage-dir}/jacoco.exec"/>
+	        </executiondata>
+	        <structure name="Code coverage">
+	            <classfiles>
+	                <fileset dir="${build-dir}/classes"/>
+	            </classfiles>
+	            <sourcefiles encoding="UTF-8">
+	                <fileset dir="${current-basedir}/src/java"/>
+	            </sourcefiles>
+	        </structure>
+	        <html destdir="${coveragereport-dir}"/>
+		</jacoco:report>			
+	</target>
+
+    <target name="t.generate-pom">
+        <ivy:deliver deliverpattern="${build-dir}/artifacts/ivys/ivy.xml" pubrevision="${product.version.number}" status="integration" />
+        <ivy:makepom ivyfile="${build-dir}/artifacts/ivys/ivy.xml" pomfile="${build-dir}/artifacts/poms/${module-name}.pom" conf="default" >
+            <mapping conf="default" scope="compile"/>
+        </ivy:makepom>
+    </target>
+            
+	<!-- We should run _publish.local even for nightly build which publishes to isl-ivy, since isl-ivy
+	     might not return the artifacts immediately after they are published. -->
+	<target name="_publish.local" depends="t.generate-version-properties,t.generate-pom">
+		<ivy:publish resolver="local-repo" forcedeliver="true" overwrite="true" pubrevision="${product.version.number}" status="integration">
+            <artifacts pattern="${build-dir}/artifacts/[type]s/[artifact].[ext]" />
+		</ivy:publish>
+	</target>
+            
+    <target name="t.publish" depends="_resolve-only,_package-install,_publish.local">
+	</target>
+
+    <!-- generates version.properties that can be then used during the build -->
+    <property name="version-properties-file" value="${temp-dir}/version.properties" />
+	
+	<target name="_generate-version-properties-local-build" >
+		<mkdir dir="${temp-dir}"/>
+		<exec executable="hostname" outputproperty="computer.hostname"/>
+		<propertyfile file="${version-properties-file}" comment="Generated by the build">
+			<entry key="version.date" value="${DSTAMP}${TSTAMP}" />
+			<entry key="version.state" value="${user.name}@${computer.hostname}" />
+			<entry key="VERSIONSTRING" value="${user.name}@${computer.hostname}.${DSTAMP}" />
+		</propertyfile>
+		<property name="product.version.number" value="${development.version.number}" />
+	</target>
+	
+	<target name="t.generate-version-properties" depends="_generate-version-properties-local-build">
+		<loadproperties srcfile="${version-properties-file}" />		
+	</target>
+
+	<target name="t.create-manifest" depends="t.generate-version-properties" >
+        <if>
+            <istrue value="${manifest.classpath.embed}"/>
+            <then>
+                <echo>Embedding dependent classpath into manifest...</echo>
+                <!-- Build a dependency-based Class-Path for Manifest -->
+                <property name="tmp-classpath-dir" value="${build-dir}/tmp-classpath-dir" />
+                <mkdir dir="${tmp-classpath-dir}" />
+                <ivy:retrieve pattern="${tmp-classpath-dir}/[artifact].[ext]" type="jar,bundle" conf="runtime" />
+                <fileset id="manifestClassPathSet" dir="${tmp-classpath-dir}"/>
+                <pathconvert pathsep=" " property="Class-Path" refid="manifestClassPathSet">
+                    <chainedmapper>
+                        <flattenmapper />
+                        <globmapper from="*" to="${manifest.classpath.prefix}*" />
+                    </chainedmapper>
+                </pathconvert>
+                <echo>Manifest Class-Path: ${Class-Path}</echo>
+            </then>
+            <else>
+                <echo>NOT embedding dependent classpath into manifest...</echo>
+            	<property name="Class-Path" value="" />
+            </else>
+        </if>
+		
+		<if>
+			<istrue value="${manifest.mainclass.embed}"/>
+			<then>
+                <echo>Embedding main class into manifest...</echo>
+                <property name="Main-Class" value="${manifest.mainclass}" />
+                <echo>Manifest Main-Class: ${Main-Class}</echo>
+			</then>
+			<else>
+                <echo>NOT embedding main class into manifest...</echo>
+                <property name="Main-Class" value="" />
+			</else>
+		</if>
+		
+		<mkdir dir="${build-dir}/classes/META-INF" />
+		<manifest file="${build-dir}/classes/META-INF/MANIFEST.MF" mode="update">
+			<section name="CA Dynamic Virtualization Services">
+				<attribute name="Extension-Name" value="com.ca.${ivy.module}" />
+                <attribute name="Implementation-Title" value="CA Dynamic Virtualization Services - ${ivy.module}" />
+                <attribute name="Implementation-Vendor" value="Copyright (c) 2015 CA Technologies.  All rights reserved." />
+                <attribute name="Implementation-Version" value="${VERSIONSTRING} (${build_type} build)" />
+	            <attribute name="Permissions" value="all-permissions" />
+	            <attribute name="Codebase" value="*" />
+			</section>
+            <attribute name="Sealed" value="true" />
+            <attribute name="Class-Path" value="${Class-Path}" />
+            <attribute name="Main-Class" value="${Main-Class}" />
+		</manifest>
+	</target>
+		
+	<target name="t.javadoc">
+		<javadoc destdir="${build-dir}/javadoc" author="true" version="true" use="true" windowtitle="${module-name} javadoc">
+			<packageset dir="${current-basedir}/src/java" />
+		</javadoc>
+
+		<delete file="${build-dir}/artifacts/${project.type}s/${artifact-doc-name}" />
+		<mkdir dir="${build-dir}/artifacts/${project.type}s" />
+		
+		<jar destfile="${build-dir}/artifacts/${project.type}s/${artifact-doc-name}">
+			<fileset dir="${build-dir}/javadoc"/>
+		</jar>
+	</target>
+	
+	<target name="t.doc">
+	</target>
+	
+	<!-- Targets meant for overriding -->
+	
+	<target name="clean" depends="t.clean" description="Clean the content of the build directory">
+	</target>
+
+	<target name="this.build" depends="t.build" description="Compile java classes">
+	</target>
+
+	<target name="test" depends="t.test" description="Compile and run unit tests">
+	</target>
+
+	<target name="package" depends="t.prepare-package, t.package" description="Create jar files and other artifacts in build/artifacts folder">
+	</target>
+
+	<target name="publish" depends="t.publish" description="Publish to local ivy repository">
+	</target>
+	
+	<target name="deploy" description="Deploy project file to specific system">
+	</target>
+	
+	<target name="doc" description="Generate documentation">
+	</target>
+	
+	<target name="check-deploy-result" description="Check deploy result">
+	</target>	
+	
+	<!-- Common targets invoking more than one step -->
+	
+	<target name="all" depends="clean,this.build,test,package,doc,publish" description="Runs the full build from clean to test and publish">
+	</target>
+	
+	<target name="all-without-test" depends="clean,this.build,package,publish" description="Runs the full build from clean to publish, except test">
+	</target>
+	
+	<!-- To behave the same as it was before with CADE -->
+	<target name="build" depends="all" />
+		
+</project>

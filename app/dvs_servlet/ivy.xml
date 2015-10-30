@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE project>
+<?xml-stylesheet type="text/xsl" href="../../ivy-doc.xsl"?>
+<ivy-module version="1.0">
+
+	<!-- Information about your component. Keep casd. prefix. -->
+  <info organisation="com.ca.dvs" module="dvs.app.dvs_servlet">
+  	<extends organisation="com.ca.dvs" module="dvs.build-essentials" revision="latest.integration"
+  		location="../../build-essentials/ivy-common.xml" />
+  </info>
+
+  <configurations>
+    <!-- You can add more configurations than specified in build-essentials/ivy-common.xml if necessary, e.g. if some
+		component depends on your one and should take just a subset of artifacts or dependencies. -->
+  </configurations>
+
+  <publications>
+
+    <artifact name="dvs.app.dvs_servlet" type="pom" ext="pom" conf="default" />
+        
+    <!-- Basic product of the build, jar or war file. -->
+    <artifact name="dvs.app.dvs_servlet" type="war" ext="war" conf="default" />
+    
+    <!-- Use this if you set install.publish=true in build.properties. The build will create a zip
+    file with a content that the installer should unpack in to $USER_INSTALL_DIR$ . -->
+	<!-- <artifact name="dvs.app.dvs_servlet-install" type="resource" ext="zip" conf="install" />	-->
+  </publications>
+
+  <dependencies>
+    <!-- Specify the dependencies of your project. Please use the configurations defined above correctly,
+		so in case some of the dependencies is needed just for runtime, use "runtime" before the arrow,
+		for test-only dependencies there should be "test" before the arrow. -->
+    <dependency org="log4j"                                     name="log4j"                            rev="${ivy.rev.apache.log4j}" conf="compile,runtime,test->default" /> 
+    
+    <!-- Jersey 2.X JAX-RS (REST) - compile/runtime dependencies (to be delivered in war:WEB-INF/lib) -->
+    <dependency org="javax.servlet"                             name="javax.servlet-api"                rev="3.1.0"         conf="compile,runtime,test->default" />
+    <dependency org="javax.ws.rs"                               name="javax.ws.rs-api"                  rev="2.0.1"         conf="compile,runtime,test->default" />
+    <dependency org="javax.annotation"                          name="javax.annotation-api"             rev="1.2"           conf="compile,runtime,test->default" />
+    <dependency org="javax.validation"                          name="validation-api"                   rev="1.1.0.Final"   conf="compile,runtime,test->default" />
+    <dependency org="javax.xml.bind"                            name="jaxb-api"                         rev="2.2.12"        conf="compile,runtime,test->default" />
+    <dependency org="javax.persistence"                         name="persistence-api"                  rev="1.0.2"         conf="compile,runtime,test->default" />
+    <dependency org="javax.mail"                                name="javax.mail-api"                   rev="1.5.2"         conf="compile,runtime,test->default" />
+    
+    <dependency org="org.glassfish.jersey.bundles"              name="jaxrs-ri"                         rev="2.17"          conf="compile,runtime,test->default" />
+    <dependency org="org.glassfish.hk2"                         name="hk2-api"                          rev="2.4.0-b24"     conf="compile,runtime,test->default" />
+    <dependency org="org.glassfish.hk2"                         name="hk2"                              rev="2.4.0-b24"     conf="compile,runtime,test->default" />
+    <dependency org="org.glassfish.hk2"                         name="hk2-locator"                      rev="2.4.0-b24"     conf="compile,runtime,test->default" />
+    <dependency org="org.glassfish.hk2"                         name="hk2-utils"                        rev="2.4.0-b24"     conf="compile,runtime,test->default" />
+    <dependency org="org.glassfish.hk2"                         name="osgi-resource-locator"            rev="1.0.1"         conf="compile,runtime,test->default" />
+    <dependency org="org.glassfish.hk2.external"                name="aopalliance-repackaged"           rev="2.4.0-b24"     conf="compile,runtime,test->default" />
+    <dependency org="javax.inject"                              name="javax.inject"                     rev="1"             conf="compile,runtime,test->default" />
+    <dependency org="org.glassfish.jersey.core"                 name="jersey-common"                    rev="2.17"          conf="compile,runtime,test->default" />
+    <dependency org="org.glassfish.jersey.core"                 name="jersey-server"                    rev="2.17"          conf="compile,runtime,test->default" />
+    <dependency org="org.glassfish.jersey.core"                 name="jersey-client"                    rev="2.17"          conf="compile,runtime,test->default" />
+    <dependency org="org.glassfish.jersey.containers"           name="jersey-container-servlet-core"    rev="2.17"          conf="compile,runtime,test->default" />
+    <dependency org="org.glassfish.jersey.containers"           name="jersey-container-servlet"         rev="2.17"          conf="compile,runtime,test->default" />
+    <dependency org="org.glassfish.jersey.bundles.repackaged"   name="jersey-guava"                     rev="2.17"          conf="compile,runtime,test->default" />
+    <dependency org="org.glassfish.jersey.connectors"           name="jersey-apache-connector"          rev="2.17"          conf="compile,runtime,test->default" />
+    <dependency org="org.glassfish.jersey.ext"                  name="jersey-entity-filtering"          rev="2.17"          conf="compile,runtime,test->default" />
+    <dependency org="org.glassfish.jersey.media"                name="jersey-media-multipart"           rev="2.17"          conf="compile,runtime,test->default" />
+    <dependency org="org.glassfish.jersey.media"                name="jersey-media-json-jackson"        rev="2.17"          conf="compile,runtime,test->default" /> <!-- Make sure to add "JacksonJsonProvider.class"
+                                                                                                                                                                to the "jersey.config.server.provider.packages" servlet
+                                                                                                                                                                config property, so the Jackson json provider can be
+                                                                                                                                                                auto-discovered.
+                                                                                                                                                                -->
+
+    <!-- Jersey 2.X JAX-RS (REST) - runtime dependencies (to be delivered in war:WEB-INF/lib) -->
+    <dependency org="commons-beanutils"                             name="commons-beanutils"                        rev="1.9.2"                         conf="runtime,test->default" />
+    <dependency org="commons-codec"                                 name="commons-codec"                            rev="1.10"                          conf="runtime,test->default" />
+    <dependency org="commons-io"                                    name="commons-io"                               rev="2.4"                           conf="runtime,test->default" />
+    <dependency org="commons-lang"                                  name="commons-lang"                             rev="2.4"                           conf="runtime,test->default" />
+    <dependency org="commons-logging"                               name="commons-logging"                          rev="1.2"                           conf="runtime,test->default" />
+    <dependency org="com.google.guava"                              name="guava"                                    rev="18.0"                          conf="runtime,test->default" />
+	<dependency org="org.apache.httpcomponents"                     name="httpclient"                               rev="4.4"                           conf="runtime,test->default" />
+	<dependency org="org.apache.avalon.logkit"                      name="avalon-logkit"                            rev="2.2.1"                         conf="runtime,test->default" />
+	<dependency org="org.apache.httpcomponents"                     name="httpcore"                                 rev="4.4"                           conf="runtime,test->default" />
+	<dependency org="org.jvnet.mimepull"                            name="mimepull"                                 rev="1.9.4"                         conf="runtime,test->default" />
+    <dependency org="com.fasterxml.jackson.core"                    name="jackson-core"                             rev="2.3.2"                         conf="runtime,test->default" />
+    <dependency org="com.fasterxml.jackson.core"                    name="jackson-databind"                         rev="2.3.2"                         conf="runtime,test->default" />
+    <dependency org="com.fasterxml.jackson.core"                    name="jackson-annotations"                      rev="2.3.2"                         conf="runtime,test->default" />
+    <dependency org="com.fasterxml.jackson.jaxrs"                   name="jackson-jaxrs-base"                       rev="2.3.2"                         conf="runtime,test->default" />
+    <dependency org="com.fasterxml.jackson.jaxrs"                   name="jackson-jaxrs-json-provider"              rev="2.3.2"                         conf="compile,runtime,test->default" />
+    <dependency org="org.codehaus.groovy"                           name="groovy"                                   rev="2.4.0"                         conf="runtime,test->default" />
+    <dependency org="org.codehaus.jettison"                         name="jettison"                                 rev="1.3.7"                         conf="runtime,test->default" />
+    <dependency org="org.javassist"                                 name="javassist"                                rev="3.19.0-GA"                     conf="runtime,test->default" />
+    <dependency org="com.thoughtworks.xstream"                      name="xstream"                                  rev="1.4.7"                         conf="runtime,test->default" />
+    
+    <!-- other 3rd party dependencies -->
+    <dependency org="net.lingala.zip4j"                             name="zip4j"                                    rev="1.3.2"                         conf="compile,runtime,test->default" />
+    
+    <dependency org="org.glassfish.jersey.test-framework"           name="jersey-test-framework-core"               rev="2.17"                          conf="compile,test->default" />
+    <dependency org="org.glassfish.jersey.test-framework.providers" name="jersey-test-framework-provider-grizzly2"  rev="2.17"                          conf="compile,test->default" />
+    <dependency org="org.glassfish.jersey.containers"               name="jersey-container-grizzly2-http"           rev="2.17"                          conf="compile,test->default" />
+       
+    <dependency org="org.glassfish.grizzly"                         name="grizzly-core"                             rev="2.3.16"                        conf="compile,test->default" />
+    <dependency org="org.glassfish.grizzly"                         name="grizzly-framework"                        rev="2.3.16"                        conf="compile,test->default" />
+    <dependency org="org.glassfish.grizzly"                         name="grizzly-http"                             rev="2.3.16"                        conf="compile,test->default" />
+    <dependency org="org.glassfish.grizzly"                         name="grizzly-http-servlet"                     rev="2.3.16"                        conf="compile,test->default" />
+    <dependency org="org.glassfish.grizzly"                         name="grizzly-http-server"                      rev="2.3.16"                        conf="compile,test->default" />
+    
+    <!-- This dependency is necessary to run unit test. In case you have some unit tests,   keep it here. -->
+    <dependency org="junit"                                         name="junit"                                    rev="${ivy.rev.junit.junit}"        conf="test->default"/>
+
+    <!-- local dependencies -->
+    <dependency org="com.ca.dvs"                                    name="dvs.utilities.raml"                       rev="${internal.dependency.rev}"    conf="compile,runtime,test->default" />
+    <dependency org="com.ca.dvs"                                    name="dvs.utilities.lisamar"                    rev="${internal.dependency.rev}"    conf="compile,runtime,test->default" />
+           
+  </dependencies>
+  
+</ivy-module>

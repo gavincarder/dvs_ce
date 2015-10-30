@@ -1,0 +1,266 @@
+<?xml version="1.0" ?>
+
+<VSModel name="{{Enter VS Model Name}}" version="2">
+
+<meta>
+</meta>
+
+<id>F3C83B1CDF3611E2851D002170EF8FEA</id>
+<IsInProject>true</IsInProject>
+<sig>ZWQ9MyZ0Y3Y9NSZsaXNhdj03LjAuMyAoNy4wLjMuODgpJm5vZGVzPS01OTcxMTg4NDI=</sig>
+<subprocess>false</subprocess>
+
+<initState>
+</initState>
+
+<resultState>
+</resultState>
+
+<deletedProps>
+</deletedProps>
+
+    <Node name="Define Utility Classes" log=""
+          type="com.itko.lisa.test.ScriptNode" 
+          version="1" 
+          uid="9A406D0FFA0511E2B545005056860B58" 
+          think="500-1S" 
+          useFilters="true" 
+          quiet="false" 
+          next="Load DataStore" > 
+
+
+      <!-- Assertions -->
+		<CheckResult assertTrue="true" name="Any Exception Then Fail" type="com.itko.lisa.dynexec.CheckInvocationEx">
+		<log>Assertion name: Any Exception Then Fail checks for: true  is of type: Assert on Invocation Exception.</log>
+		<then>fail</then>
+		<valueToAssertKey></valueToAssertKey>
+				<param>.*</param>
+		</CheckResult>
+
+		<onerror>abort</onerror>
+		<script>import com.ca.casd.lisa.extensions.odata.*;&#13;&#10;&#13;&#10;public String getJSONPayloadProperty(String strPropertyName) {&#13;&#10;    Request sourceRequest = (Request) testExec.getStateObject(&quot;lisa.vse.request&quot;);&#13;&#10;    ODataDataProtocolHandler odph = new ODataDataProtocolHandler();&#13;&#10;    odph.getJsonPayloadProperty(sourceRequest, strPropertyName);&#13;&#10;}&#13;&#10;</script>
+    </Node>
+
+    <Node name="Load DataStore" log=""
+          type="com.ca.casd.lisa.extensions.odata.devteststeps.LoadDVSDataStoreStep" 
+          version="1" 
+          uid="6FC4B18846F511E3B5CA002170EF8FEA" 
+          think="500-1S" 
+          useFilters="true" 
+          quiet="false" 
+          next="Load Entity Data Model" > 
+
+      <!-- Assertions -->
+		<CheckResult assertTrue="true" name="Any Exception Then Fail" type="com.itko.lisa.dynexec.CheckInvocationEx">
+		<log>Assertion name: Any Exception Then Fail checks for: true  is of type: Assert on Invocation Exception.</log>
+		<then>fail</then>
+		<valueToAssertKey></valueToAssertKey>
+			<param>.*</param>
+		</CheckResult>
+
+		<onerror>abort</onerror>
+
+		<filename>{{Enter a URL to database}}</filename>
+		<dataStoreName>DDMEDataStore</dataStoreName>
+		<dataStoreType>{{Specify Data Store Type}}</dataStoreType>
+		<dbUserName>{{Enter User Name}}</dbUserName>
+		<dbPassword></dbPassword>
+    </Node>
+
+
+    <Node name="Load Entity Data Model" log=""
+          type="com.itko.lisa.test.ScriptNode" 
+          version="1" 
+          uid="9A406D0FFA0511E2B545005056860B58" 
+          think="500-1S" 
+          useFilters="true" 
+          quiet="false" 
+          next="Virtual HTTPS Listener" > 
+
+
+      <!-- Assertions -->
+		<CheckResult assertTrue="true" name="Any Exception Then Fail" type="com.itko.lisa.dynexec.CheckInvocationEx">
+		<log>Assertion name: Any Exception Then Fail checks for: true  is of type: Assert on Invocation Exception.</log>
+		<then>fail</then>
+		<valueToAssertKey></valueToAssertKey>
+			<param>.*</param>
+		</CheckResult>
+
+		<onerror>abort</onerror>
+		<script>import com.itko.lisa.test.TestCase;&#13;&#10;import com.itko.lisa.test.TestExec;&#13;&#10;import com.itko.lisa.test.TestNode;&#13;&#10;import com.itko.lisa.test.TestRunException;&#13;&#10;&#13;&#10;import com.itko.lisa.vse.stateful.model.Request;&#13;&#10;import com.ca.casd.utilities.commonUtils.metadata.Metadata;&#13;&#10;import com.ca.casd.lisa.extensions.odata.metadata.*;&#13;&#10;import com.ca.casd.lisa.extensions.odata.ODMEResponseMetadataXML;&#13;&#10;&#13;&#10;MetadataParser metadataParser = new MetadataParser(testExec);&#13;&#10;&#13;&#10;String edmToDbMappingFileName = &quot;{{LISA_PROJ_ROOT}}/Data/EDMToDB.xml&quot;;&#13;&#10;&#13;&#10;metadataParser.parseXmlFile(edmToDbMappingFileName);&#13;&#10;&#13;&#10;Metadata m = metadataParser.getMetadata();&#13;&#10;&#13;&#10;if (m != null) {&#13;&#10;    testExec.setStateObject(&quot;EDMDBMetadata&quot;, m); &#13;&#10;}&#13;&#10;&#13;&#10;return;&#13;&#10;</script>
+    </Node>	
+
+    <Node name="Virtual HTTPS Listener" log=""
+          type="com.itko.lisa.vse.stateful.protocol.http.HttpListenStep" 
+          version="1" 
+          uid="5D12A599051211E3A883002170EF8FEA" 
+          think="0" 
+          useFilters="true" 
+          quiet="true" 
+          next="VS Image Response Selection" > 
+
+
+      <!-- Filters -->
+      <Filter type="com.itko.lisa.vse.stateful.common.DataProtocolFilter">
+        <valueToFilterKey>lisa.Virtual HTTPS Listener.rsp</valueToFilterKey>
+		<dataProtocol>com.ca.casd.lisa.extensions.odata.ODataDataProtocolHandler</dataProtocol>
+		<processRequests>true</processRequests>
+		<processResponses>false</processResponses>
+		<CustomFilterData>
+		</CustomFilterData>
+      </Filter>
+
+		<!-- Assertions -->
+		<CheckResult assertTrue="true" name="If being efficient" type="com.itko.lisa.vse.stateful.AssertOnExecutionMode">
+		<log>Current execution mode is Most Efficient, branching to VS Image Response Selection</log>
+		<then>VS Image Response Selection</then>
+		<valueToAssertKey></valueToAssertKey>
+				<executionMode>EFFICIENT</executionMode>
+		</CheckResult>
+
+		<outputAsObject>true</outputAsObject>
+		<onExceptionStep>abort</onExceptionStep>
+		<listenPort>{{Enter Port#}}</listenPort>
+		<basePath>{{Enter Base URL}}</basePath>
+		<bindOnly>false</bindOnly>
+		<useSSL>false</useSSL>
+    </Node>
+
+
+    <Node name="VS Image Response Selection" log=""
+          type="com.itko.lisa.vse.stateful.ConversationalStep" 
+          version="1" 
+          uid="null" 
+          think="0" 
+          useFilters="true" 
+          quiet="true" 
+          next="Virtual HTTPS Responder" > 
+
+
+      <!-- Assertions -->
+		<CheckResult assertTrue="true" name="If validating" type="com.itko.lisa.vse.stateful.AssertOnExecutionMode">
+		<log>Current execution mode is Image Validation, branching to Virtual HTTPS Live Invocation</log>
+		<then>Virtual HTTPS Live Invocation</then>
+		<valueToAssertKey></valueToAssertKey>
+				<executionMode>VALIDATION</executionMode>
+		</CheckResult>
+
+		<CheckResult assertTrue="true" name="If tracking" type="com.itko.lisa.vse.stateful.AssertOnExecutionMode">
+		<log>Current execution mode is Transaction Tracking, branching to Virtual Service Tracking</log>
+		<then>Virtual Service Tracking</then>
+		<valueToAssertKey></valueToAssertKey>
+				<executionMode>TRACK</executionMode>
+		</CheckResult>
+
+		<vsiSource>{{Specify VSI file}}</vsiSource>
+		<requestPropertyName>lisa.vse.request</requestPropertyName>
+		<outputAsObject>true</outputAsObject>
+		<onExceptionStep>abort</onExceptionStep>
+    </Node>
+
+
+    <Node name="Virtual HTTPS Responder" log=""
+          type="com.itko.lisa.vse.stateful.protocol.http.HttpRespondStep" 
+          version="1" 
+          uid="null" 
+          think="0" 
+          useFilters="true" 
+          quiet="false" 
+          next="Virtual HTTPS Listener" > 
+
+
+		<!-- Filters -->
+		<Filter type="com.itko.lisa.vse.stateful.common.DataProtocolFilter">
+			<valueToFilterKey>lisa.vse.response</valueToFilterKey>
+			<dataProtocol>com.ca.casd.lisa.extensions.odata.ODMEResponseHandler</dataProtocol>
+			<processRequests>false</processRequests>
+			<processResponses>true</processResponses>
+			<CustomFilterData>
+			</CustomFilterData>
+		</Filter>
+
+		<responseList>lisa.vse.response</responseList>
+		<onExceptionStep>abort</onExceptionStep>
+    </Node>
+
+
+    <Node name="Virtual Service Tracking" log=""
+          type="com.itko.lisa.vse.stateful.VSTrackingStep" 
+          version="1" 
+          uid="null" 
+          think="0" 
+          useFilters="true" 
+          quiet="true" 
+          next="end" > 
+
+<imageResponseProperty>lisa.vse.image.response</imageResponseProperty>
+<liveResponseProperty>lisa.vse.live.response</liveResponseProperty>
+<onExceptionStep>abort</onExceptionStep>
+    </Node>
+
+
+    <Node name="Virtual HTTPS Live Invocation" log=""
+          type="com.itko.lisa.vse.stateful.protocol.http.HttpLiveInvocationStep" 
+          version="1" 
+          uid="null" 
+          think="0" 
+          useFilters="true" 
+          quiet="true" 
+          next="Virtual HTTPS Responder" > 
+
+
+		<!-- Assertions -->
+		<CheckResult assertTrue="true" name="If validating" type="com.itko.lisa.vse.stateful.AssertOnExecutionMode">
+		<log>Current execution mode is Image Validation, branching to Virtual Service Tracking</log>
+		<then>Virtual Service Tracking</then>
+		<valueToAssertKey></valueToAssertKey>
+				<executionMode>VALIDATION</executionMode>
+		</CheckResult>
+
+		<outputAsObject>true</outputAsObject>
+		<onExceptionStep>abort</onExceptionStep>
+		<requestPropertyName>lisa.vse.request</requestPropertyName>
+		<targetServer>{{LISA_HOST}} </targetServer>
+		<targetPort>8080</targetPort>
+		<useSSLToServer>false</useSSLToServer>
+		<useSSL>false</useSSL>
+    </Node>
+
+
+    <Node name="end" log=""
+          type="com.itko.lisa.test.NormalEnd" 
+          version="1" 
+          uid="F3C83B1EDF3611E2851D002170EF8FEA" 
+          think="0h" 
+          useFilters="true" 
+          quiet="true" 
+          next="fail" > 
+
+    </Node>
+
+
+    <Node name="fail" log=""
+          type="com.itko.lisa.test.Abend" 
+          version="1" 
+          uid="F3C83B20DF3611E2851D002170EF8FEA" 
+          think="0h" 
+          useFilters="true" 
+          quiet="true" 
+          next="fail" > 
+
+    </Node>
+
+
+    <Node name="abort" log="The test was aborted"
+          type="com.itko.lisa.test.AbortStep" 
+          version="1" 
+          uid="F3C83B22DF3611E2851D002170EF8FEA" 
+          think="0h" 
+          useFilters="true" 
+          quiet="true" 
+          next="fail" > 
+
+    </Node>
+
+
+</VSModel>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Schema xmlns="http://schemas.microsoft.com/ado/2006/04/edm" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" Namespace="RegistrationManagerAPI" Version="v1">
+  <EntityType Name="registerService">
+    <Property Key="true" Name="serviceCode" Nullable="false" Type="Edm.String"/>
+    <Property Key="true" Name="siteName" Nullable="false" Type="Edm.String"/>
+    <Property Name="registrationID" Type="Edm.Int32"/>
+    <Property Name="registrationUser" Type="Edm.String"/>
+    <Property Name="serviceUuid" Type="Edm.String"/>
+    <Property Name="siteId" Type="Edm.String"/>
+    <Property Name="registrationStatus" Type="Edm.String"/>
+    <Property Name="registrationStart" Type="Edm.String"/>
+    <Property Name="registrationEnd" Type="Edm.String"/>
+    <Property Name="registrationDurationSec" Type="Edm.String"/>
+    <Property Name="registrationResult" Type="Edm.String"/>
+    <Property Name="lastExecutedActivity" Type="Edm.String"/>
+    <Property Name="creationUserId" Type="Edm.String"/>
+    <Property Name="deletionUserId" Type="Edm.String"/>
+    <Property Name="modifiedUserId" Type="Edm.String"/>
+    <Property Name="version" Type="Edm.String"/>
+    <Property Name="isDeleted" Type="Edm.String"/>
+    <Property Name="isEnabled" Type="Edm.String"/>
+    <Property Name="isHidden" Type="Edm.String"/>
+  </EntityType>
+  <EntitySet EntityType="registerService" Name="registerServices"/>
+</Schema>

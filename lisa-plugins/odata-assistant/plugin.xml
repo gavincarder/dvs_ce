@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="DVS Assistant"
+            id="com.ca.casd.lisa.plugins.odataassistant">
+      </category>
+      <view
+            name="DVS Assistant View"
+            icon="icons/deploy.gif"
+            category="com.ca.casd.lisa.plugins.odataassistant"
+            class="com.ca.casd.lisa.plugins.odataassistant.views.OdataAssistant"
+            id="com.ca.casd.lisa.plugins.odataassistant.views.OdataAssistant">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            name="DVS Assistant View"
+            categoryId="com.ca.casd.lisa.plugins.odataassistant.commands.category"
+            id="com.ca.casd.lisa.plugins.odataassistant.menus.commands.odataAssistantCommand">
+      </command>      
+   </extension>
+   <extension
+      	point="org.eclipse.ui.handlers">
+      <handler
+           	commandId="com.ca.casd.lisa.plugins.odataassistant.menus.commands.odataAssistantCommand"
+            class="com.ca.casd.lisa.plugins.odataassistant.handlers.OdataAssistantHandler">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.ProblemView"
+               relationship="right"
+               id="com.ca.casd.lisa.plugins.odataassistant.views.OdataAssistant">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="com.ca.casd.lisa.plugins.odataassistant.preferences.OdataAssistantPreferencePage"
+            id="com.ca.casd.lisa.plugins.odataassistant.preferences.OdataAssistantPreferencePage"
+            name="DVS Assistant">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.ca.casd.lisa.plugins.odataassistant.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="com.ca.casd.lisa.plugins.odataassistant.menus.commands.odataAssistantCommand"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M1+6"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               label="DVS Assistant"
+               mnemonic="M"
+                id="com.ca.casd.lisa.plugins.odataassistant.menus.odataAssistantMenu">
+            <command
+             	  icon="icons/deploy.gif"
+                  commandId="com.ca.casd.lisa.plugins.odataassistant.menus.commands.odataAssistantCommand"
+                  mnemonic="S"
+                  id="com.ca.casd.lisa.plugins.odataassistant.menus.commands.odataAssistantCommand">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   
+</plugin>

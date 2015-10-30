@@ -1,0 +1,212 @@
+#%RAML 0.8
+---
+title: "JUG - RAML"
+version: v1
+baseUri: https://localhost:8080/raml/resources
+protocols: [ HTTPS ]
+mediaType: application/json
+documentation:
+    - title: Home
+      content: |
+        JUG - Contract-first with RAML
+schemas:
+    - author: |
+        {   "$schema": "http://json-schema.org/draft-04/schema",
+            "type": "object",
+            "description": "A single author",
+            "properties": {
+                "id": { "type": "integer" },
+                "name":  { "type": "string" },
+                "books": {
+                    "type": "array",
+                    "items": {
+                        "$ref":"book"
+                    }
+                }
+            },
+            "required": [ "id", "name" ],
+            "primaryKeys": [ "id" ]
+        }
+    - book: |
+        {   "$schema": "http://json-schema.org/draft-04/schema",
+            "type": "object",
+            "description": "A single book",
+            "properties": {
+                "id": { "type": "integer" },
+                "name":  { "type": "string" },
+                "isbn":  { "type": "string" },
+                "author_id" : { "type": "integer" }
+            },
+            "required": [ "id", "name", "isbn" ],
+            "primaryKeys": [ "id" ]
+        }
+    - authors: |
+        {   "$schema": "http://json-schema.org/draft-04/schema",
+            "type": "object",
+            "description": "a collection of authors",
+            "properties": {
+                "size":  { "type": "integer" },
+                "authors":  {
+                    "type": "array",
+                    "items": { "$ref": "author" }
+                }
+            },
+            "required": [ "size" ]
+        }
+    - books: |
+        {   "$schema": "http://json-schema.org/draft-04/schema",
+            "type": "object",
+            "description": "a collection of books",
+            "properties": {
+                "size":  { "type": "integer" },
+                "books":  {
+                    "type": "array",
+                    "items": { "$ref": "book" }
+                }
+            },
+            "required": [ "size" ]
+        }
+/authors:
+    get:
+        description: Get a list of all the authors in the system
+        responses:
+            200:
+                body:
+                    application/json:
+                        schema: authors
+                        example: |
+                            {
+                              "size": 3,
+                              "authors": [
+                                  { "id": 1, "name": "J. R. R. Tolkien", "books": [
+                                                                            { "id": 1, "name": "The Hobbit; or, There and Back Again", "isbn": "054792822X", "author_id": 1 },
+                                                                            { "id": 2, "name": "The Fellowship of the Ring", "isbn": "B007978NPG", "author_id": 1 }, 
+                                                                            { "id": 3, "name": "The Two Towers", "isbn": "B007978PKY", "author_id": 1 }, 
+                                                                            { "id": 4, "name": "The Return of the King", "isbn": "054792819X", "author_id": 1 }
+                                                                            ]
+                                  },
+                                  { "id": 2, "name": "George Orwell", "books": [
+                                                                            { "id": 5, "name": "1984", "isbn": "0451524934", "author_id": 2 },
+                                                                            { "id": 6, "name": "Animal Farm: A Fairy Story", "isbn": "B003K16PUU", "author_id": 2 }
+                                                                            ]
+                                  },
+                                  { "id": 3, "name": "Ernest Hemingway", "books": [
+                                                                            { "id": 7, "name": "The Sun Also Rises", "isbn": "0743297334", "author_id": 3 },
+                                                                            { "id": 8, "name": "For Whom the Bell Tolls", "isbn": "0684803356", "author_id": 3 },
+                                                                            { "id": 9, "name": "The Old Man and the Sea", "isbn": "B000FC0SH8", "author_id": 3 },
+                                                                            { "id": 10, "name": "A Farewell To Arms", "isbn": "0684801469", "author_id": 3 }
+                                                                            ]
+                                  }
+                              ]
+                            }
+
+    post:
+        description: Add author
+        body:
+            application/json:
+                schema: author
+                example: |
+                    {
+                        "id": 1, "name": "J. R. R. Tolkien", "books": [
+                                                                    { "id": 1, "name": "The Hobbit; or, There and Back Again", "isbn": "054792822X", "author_id": 1 },
+                                                                    { "id": 2, "name": "The Fellowship of the Ring", "isbn": "B007978NPG", "author_id": 1 }, 
+                                                                    { "id": 3, "name": "The Two Towers", "isbn": "B007978PKY", "author_id": 1 }, 
+                                                                    { "id": 4, "name": "The Return of the King", "isbn": "054792819X", "author_id": 1 }
+                                                                    ]
+                    }
+        responses:
+            201:
+                body:
+                    application/json:
+                        schema: author
+    /id/{authorId}:
+        uriParameters:
+            authorId:
+                displayName: Author ID
+                type: integer
+                example: 1
+        get:
+            description: Retrieve a specific author
+            responses:
+                200:
+                    body:
+                        application/json:
+                            schema: author
+                            example: |
+                                {
+                                    "id": 1, "name": "J. R. R. Tolkien", "books": [
+                                                                                { "id": 1, "name": "The Hobbit; or, There and Back Again", "isbn": "054792822X", "author_id": 1 },
+                                                                                { "id": 2, "name": "The Fellowship of the Ring", "isbn": "B007978NPG", "author_id": 1 }, 
+                                                                                { "id": 3, "name": "The Two Towers", "isbn": "B007978PKY", "author_id": 1 }, 
+                                                                                { "id": 4, "name": "The Return of the King", "isbn": "054792819X", "author_id": 1 }
+                                                                                ]
+                                }
+        post:
+            description: Update an author
+            body:
+                application/json:
+                    schema: author
+            responses:
+                200:
+                    body:
+                        application/json:
+                            schema: author
+        delete:
+            description: Delete an author
+            responses:
+                200:
+/books:
+    get:
+        description: Get a list of all of the books in the system
+        responses:
+            200:
+                body:
+                    application/json:
+                        schema: books
+                        example: |
+                            {
+                                "size": 10,
+                                "books": [
+                                        { "id": 1, "name": "The Hobbit; or, There and Back Again", "isbn": "054792822X", "author_id": 1 },
+                                        { "id": 2, "name": "The Fellowship of the Ring", "isbn": "B007978NPG", "author_id": 1 }, 
+                                        { "id": 3, "name": "The Two Towers", "isbn": "B007978PKY", "author_id": 1 }, 
+                                        { "id": 4, "name": "The Return of the King", "isbn": "054792819X", "author_id": 1 },
+                                        { "id": 5, "name": "1984", "isbn": "0451524934", "author_id": 2 },
+                                        { "id": 6, "name": "Animal Farm: A Fairy Story", "isbn": "B003K16PUU", "author_id": 2 },
+                                        { "id": 7, "name": "The Sun Also Rises", "isbn": "0743297334", "author_id": 3 },
+                                        { "id": 8, "name": "For Whom the Bell Tolls", "isbn": "0684803356", "author_id": 3 },
+                                        { "id": 9, "name": "The Old Man and the Sea", "isbn": "B000FC0SH8", "author_id": 3 },
+                                        { "id": 10, "name": "A Farewell To Arms", "isbn": "0684801469", "author_id": 3 }
+                                        ]
+                            }
+    post:
+        description: Create a book
+        body:
+            application/json:
+                schema: book
+                example: |
+                    {
+                      "id": 1, "name": "The Hobbit; or, There and Back Again", "isbn": "054792822X", "author_id": 1
+                    }
+        responses:
+            201:
+                body:
+                    application/json:
+                        schema: book
+    /id/{bookId}:
+        uriParameters:
+            bookId:
+                description: Book ID
+                type: integer
+                example: 1
+        get:
+            description: Get a book
+            responses:
+                200:
+                    body:
+                        application/json:
+                            schema: author
+                            example: |
+                                {
+                                  "id": 1, "name": "The Hobbit; or, There and Back Again", "isbn": "054792822X", "author_id": 1
+                                }

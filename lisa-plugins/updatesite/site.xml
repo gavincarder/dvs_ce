@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE site>
+<site>
+   <feature url="features/com.ca.casd.lisa.plugins.odataassistant-feature_1.0.0.qualifier.jar" id="com.ca.casd.lisa.plugins.odataassistant-feature" version="1.0.0.qualifier">
+      <category name="DVS Assistant Eclipse PlugIn"/>
+   </feature>
+   <category-def name="DVS Assistant Eclipse PlugIn" label="DVS Assistant Eclipse PlugIn"/>
+</site>

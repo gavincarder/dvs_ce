@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<project name="buildCommon" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<dirname property="buildCommon-basedir" file="${ant.file.buildCommon}" />
+	<dirname property="topLevel-basedir" file="${ant.file.buildCommon}\.." />
+
+	<property file="${buildCommon-basedir}/build.properties.local" />
+	<property file="${buildCommon-basedir}/build.properties" />
+	
+    <property name="build_type" value="developer"/>
+    
+    <ivy:settings file="${buildCommon-basedir}/ivysettings.xml" />
+    
+    <!-- Load global build.properties.local file (if exists) -->
+    <echo level="info">Loading '${topLevel-basedir}/build.properties.local' file...</echo>
+    <property file="${topLevel-basedir}/build.properties.local"/>
+    
+    <macrodef name="archive-lisa-extension" description="Archive LISA extension jar with associated support folder to a zip named for the modification time of the jar">
+        <attribute name="extension-dir" default="${LISA_HOME}/hotdeploy"/>
+        <attribute name="extension-jar"/>
+        <attribute name="archive-dir" default="${LISA_HOME}/hotdeploy"/>
+        <sequential>
+            <echo>LISA extension: dir=@{extension-dir}, jar=@{extension-jar}</echo>
+            <propertyregex property="base-name" 
+                input="@{extension-jar}"
+                regexp="(.*)\.(.*)"
+                select="\1" override="true"/>
+
+            <propertyregex property="suffix-name"
+                input="@{extension-jar}"
+                regexp="(.*)\.(.*)"
+                select="\2" override="true"/>
+            <file.mdate file="@{extension-dir}/@{extension-jar}" property="extension-mdate" format="yyyy-MMM-dd_HHmm" />
+            <property name="archive-file" location="@{archive-dir}/${base-name}_${extension-mdate}.zip" />
+            <echo>Archiving @{extension-dir}/@{extension-jar} to ${archive-file}...</echo>
+            <zip destfile="${archive-file}" basedir="@{extension-dir}" includes="${base-name}.${suffix-name}, ${base-name}/**"/>
+        </sequential>
+    </macrodef>
+    
+    <target name="clean-ivy-cache" depends="" description="Cleans all SOI related artifacts from both Ivy local repo and cache" >
+        
+        <echo>Cleaning DVS artifacts from local repository and ivy cache...</echo>
+        <delete includeEmptyDirs="true" failonerror="true">
+          <fileset dir="${topLevel-basedir}/build-essentials">
+            <include name="local-repo/com.ca.dvs/**"/>
+            <include name="ivy-cache/cache/com.ca.dvs/**"/>
+          </fileset>
+        </delete>
+       
+    </target>
+	
+	<target name="skip-test" description="Specify this target before any other target on the command line not to execute tests during build process">
+	        <property name="is.skip.test" value="true" />    
+    </target>
+	
+	<target name="skip-doc" description="Specify this target before any other target on the command line to skip documentation generation during build process">
+	        <property name="is.skip.doc" value="true" />    
+    </target>
+    
+</project>

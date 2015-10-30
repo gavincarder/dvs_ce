@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Context>
+<Context>
+
+    <!-- vseServicePortRange - subset of USER range (1024-49151), pool of ports to deploy services on -->
+    <Environment    name="vseServicePortRange"
+                    value="46001-46999"
+                    type="java.lang.String"
+                    override="false"/>
+                    
+    <!-- vseServerUrl - VSE Service API URL -->                
+    <Environment    name="vseServerUrl"
+                    value="http://localhost:1505/api/Dcm/VSEs/VSE"
+                    type="java.lang.String"
+                    override="false" />
+
+    <!-- vseServiceReadyWaitSeconds - time to wait for deployed service to be ready -->                
+    <Environment    name="vseServiceReadyWaitSeconds"
+                    value="15"
+                    type="java.lang.Integer"
+                    override="false" />
+                    
+</Context>

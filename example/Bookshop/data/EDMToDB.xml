@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Schema Namespace="com.ca.example.Bookshop" Version="1.0" Alias="Bookshop">
+
+<EnumType Name="Status">
+    <Member Name="open" Value="10" />
+    <Member Name="packed" />
+    <Member Name="shipped" />
+    <Member Name="onhold" />	
+</EnumType>
+
+<ComplexType Name="Dimensions" >
+    <Property Name="Height" Type="Edm.Double" Nullable="false" />
+    <Property Name="Width" Type="Edm.Double" Nullable="false" />
+    <Property Name="Thickness" Type="Edm.Double" Nullable="false" />
+</ComplexType>
+
+<ComplexType Name="Address" >
+    <Property Name="StreetAddress" Type="Edm.String" Nullable="false" />
+	<Property Name="City" Type="Edm.String" Nullable="false" />
+	<Property Name="PostalCode" Type="Edm.String"/>
+    <Property Name="Region" Type="Edm.String" Nullable="false"/>
+    <Property Name="Country" Type="Edm.String"/>  
+</ComplexType>
+
+<ComplexType Name="ContactInfo" >
+    <Property Name="PrimaryPhone" Type="Edm.String"/>
+    <Property Name="AlternatePhones" Type="Collection(Edm.String)"/>
+    <Property Name="PrimaryEmail" Type="Edm.String"/>
+    <Property Name="AlternateEmails" Type="Collection(Edm.String)"/>
+	<Property Name="MailingAddress" Type="Bookshop.Address" Nullable="false"/>
+</ComplexType>
+
+<EntityType Name="Author">
+  	<Property Name="Id" Type="Edm.String" Key="true" Generated="Once" GenMethod="Sequence"/>   <!-- Automaticaly generate an integer key --> 
+	<Property Name="Name" Type="Edm.String" Nullable="false" MaxLength="64"/>
+	<Property Name="Bio" Type="Edm.String" />
+	<Property Name="DOB" Type="Edm.Date" />
+	<Property Name="DOD" Type="Edm.Date" />
+	<NavigationProperty Name="Books" Type="Book" Relationship="Author_Book" Multiplicity="*" />
+</EntityType>
+
+<EntityType Name="Book">
+ 	<Property Name="Id" Type="Edm.String"  MaxLength="16" Key="true" />
+	<Property Name="AuthorId" Type="Edm.String" Nullable="false"/>
+	<Property Name="Title" Type="Edm.String" Nullable="false"/>
+	<Property Name="Synopsis" Type="Edm.String"/>
+	<Property Name="ListPrice" Type="Edm.Double"  MaxLength="8"/>
+	<Property Name="Weight" Type="Edm.Double"  MaxLength="8"/>
+	<Property Name="Size" Type="Bookshop.Dimensions"/>
+	<NavigationProperty Name="Author" Type="Author" Relationship="Author_Book" Multiplicity="0..1" />
+	<NavigationProperty Name="Inventory" Type="Inventory" Relationship="Inventory_Book" Multiplicity="0..1" />		<!-- 1:1 Navigation Example -->
+	<NavigationProperty Name="Comments" Type="Comment" Relationship="Book_Comment" Multiplicity="*" />				<!-- 1:Many Unidirectional Navigation Example -->
+</EntityType>
+
+<EntityType Name="Comment" DBTable="COMMENT">
+ 	<Property Name="Id" Type="Edm.Int32" Key="true" Generated="Once" GenMethod="Sequence"/>
+	<Property Name="BookId" Type="Edm.String" Nullable="false"  MaxLength="16"/>   <!--  MaxLength *may* be used instead of Maxlenth, but  MaxLength is preferred-->
+	<Property Name="CriticName" Type="Edm.String" Nullable="false"/>
+	<Property Name="CriticEMail" Type="Edm.String" Nullable="false"/>
+	<Property Name="Comment" Type="Edm.String"/>
+	<Property Name="Posted" Type="Edm.DateTimeOffset" Generated="Once" GenMethod="Init" DefaultValue="Current_Timestamp()"/>   <!-- Automatic value generation using an SQL function --> 
+</EntityType>
+
+<EntityType Name="Inventory">
+ 	<Property Name="Id" Type="Edm.String"  MaxLength="16" Key="true" />
+	<Property Name="Price" Type="Edm.Float"/>
+	<Property Name="InStock" Type="Edm.Int32" DefaultValue="0" />
+	<Property Name="OnOrder" Type="Edm.Int32" DefaultValue="0" />
+	<NavigationProperty Name="Item" Type="Book" Relationship="Inventory_Book" Multiplicity="0..1" />
+	<NavigationProperty Name="Purchases" Type="LineItem" Relationship="LineItem_Inventory" Multiplicity="*" />			<!-- 1:Many Uni-directional Navigation Example -->
+</EntityType>
+
+<EntityType Name="Personnel">
+  	<Property Name="Id" Key="true" Type="Edm.String" Generated="Once" GenMethod="Sequence" GenPattern="EMP%05d"/>    <!-- Automaticaly generate a string key --> 
+  	<Property Name="Name" Type="Edm.String"/>
+  	<Property Name="Title" Type="Edm.String" MaxLength="max"/>  <!-- MaxLength="max" is the same as no MaxLength -->
+	<Property Name="ContactInfo" Type="Bookshop.ContactInfo"/>
+	<Property Name="SupervisorId" Type="Edm.String"/>
+	<Property Name="SkillSet" Type="Collection(Edm.String)"/>
+	<Property Name="WorkLocation" Type="Bookshop.Address"/>
+	<Property Name="ClockIn" Type="Edm.Time"/>			<!-- Nominal Start of day for Employee -->
+	<Property Name="ClockOut" Type="Edm.Time"/>			<!-- Nominal End of day for Employee -->
+    <NavigationProperty Name="Supervisor" Type="Personnel"  Relationship="Personnel_Supervisor" Multiplicity="0..1"/>   <!-- NP referencing the same EntityType -->
+	<NavigationProperty Name="Staff" Type="Personnel"  Relationship="Personnel_Staff" Multiplicity="*"/>   <!-- NP referencing the same EntityType -->
+	<NavigationProperty Name="Teams" Type="WorkTeam"  Relationship="Worker_Team" Multiplicity="*"/>   <!-- M:M NP -->
+</EntityType>
+
+<EntityType Name="WorkTeam" CustomPropertiesEnabled="true" >
+  	<Property Name="TeamName" Type="Edm.String" Key="True"/>
+  	<Property Name="Description" Type="Edm.String"/>  
+    <NavigationProperty Name="Members" Type="Personnel"  Relationship="Worker_Team" Multiplicity="*"/>   <!-- M:M NP -->
+</EntityType>
+
+<EntityType Name="Customer">
+  	<Property Name="Id" Key="true" Type="Edm.String" Generated="Once" GenMethod="Sequence" GenPattern="CUS%05d"/>    <!-- Automaticaly generate a string key --> 
+  	<Property Name="CustomerName" Type="Edm.String" Nullable="false"/>
+  	<Property Name="Description" Type="Edm.String"  MaxLength="2048"/>
+	<Property Name="ContactInfo" Type="Bookshop.ContactInfo"/>
+    <NavigationProperty Name="Orders" Type="Order" Relationship="Customer_Order" Multiplicity="*"/>
+</EntityType>
+
+<EntityType Name="Order" DBTable="CUSTORDER" CustomPropertiesEnabled="true" CustomPropertiesName="Special" >	<!-- Override default Tablename, Enable a collection of Name value pairs --> 
+  	<Property Name="Id" Key="true" Type="Edm.String" Generated="Once" GenMethod="Sequence" GenPattern="ORD%05d"/>    <!-- Automaticaly generate a string key --> 
+  	<Property Name="CustomerId" Type="Edm.String"  Nullable="false"/>
+	<Property Name="Status" Type="Bookshop.Status"  DefaultValue="'open'"/>
+	<Property Name="ShipVia" Type="Edm.String" DefaultValue="'Parcel Post'"/>                                                       <!-- Restricted Value Type --> 
+	<Property Name="ShipTo" Type="Bookshop.Address"/>
+	<Property Name="Tags" Type="Collection(Edm.String)"/>
+	<Property Name="Created" Type="Edm.DateTimeOffset" Generated="Once" GenMethod="Init" DefaultValue="Current_Timestamp()"/>   <!-- Automatic value initialization using an SQL function --> 
+	<Property Name="LastUpdate" Type="Edm.DateTimeOffset" Generated="Always" GenMethod="Init" DefaultValue="Current_Timestamp()"/>   <!-- Automatic value generation using an SQL function --> 
+    <NavigationProperty Name="Customer" Type="Order" Relationship="Customer_Order" Multiplicity="0..1"/>
+	<NavigationProperty Name="LineItems" Type="LineItem" Relationship="Order_LineItems" Multiplicity="*"/>
+</EntityType>
+
+<EntityType Name="LineItem">
+ 	<Property Name="OrderNumber" Type="Edm.String" Key="true"/>  <!-- Multi-part key, part 1 -->
+ 	<Property Name="LineNumber" Type="Edm.Int32" Key="true"/>  <!-- Multi-part key, part 2 -->
+	<Property Name="ItemId" Type="Edm.String" Nullable="false"/>
+	<Property Name="PriceSold" Type="Edm.Double"/>
+	<Property Name="Quantity" Type="Edm.Int32" Nullable="false"/>
+	<NavigationProperty Name="Item" Type="Book" Relationship="LineItem_Book" Multiplicity="*" />
+	<NavigationProperty Name="Order" Type="Order" Relationship="Order_LineItems" Multiplicity="0..1"/>
+</EntityType>
+
+<EntityType Name="Membership">
+ 	<Property Name="Employee" Type="Edm.String" Key="true"/>
+	<Property Name="Team" Type="Edm.String" Key="true"/>
+</EntityType>
+
+<!-- Entity Sets -->
+<EntitySet Name="Authors" EntityType="Author" />
+<EntitySet Name="Books" EntityType="Book" />
+<EntitySet Name="Comments" EntityType="Comment" />
+<EntitySet Name="Personnel" EntityType="Personnel" />
+<EntitySet Name="WorkTeams" EntityType="WorkTeam" />
+<EntitySet Name="Customers" EntityType="Customer" />
+<EntitySet Name="Orders" EntityType="Order" />
+<EntitySet Name="OrderItems" EntityType="LineItem" />
+<EntitySet Name="Inventory" EntityType="Inventory" />
+	
+<Association Name="Author_Book" DBLinkTable="BOOK" DBJoinOn="BOOK.AUTHORID=AUTHOR.ID"/>
+<Association Name="Book_Comment" DBLinkTable="COMMENT" DBJoinOn="COMMENT.BOOKID=BOOK.ID"/>
+<Association Name="LineItem_Book" DBLinkTable="LINEITEM" DBJoinOn="LINEITEM.ITEMID=BOOK.ID"/>
+<Association Name="Inventory_Book" DBLinkTable="INVENTORY" DBJoinOn="INVENTORY.ID=BOOK.ID"/>
+<Association Name="LineItem_Inventory" DBLinkTable="LINEITEM" DBJoinOn="LINEITEM.ITEMID=INVENTORY.ID"/>
+<Association Name="Personnel_Staff" DBLinkTable="PERSONNEL" DBJoinOn="PERSONNEL.ID=PERSONNEL.SUPERVISORID"/>
+<Association Name="Personnel_Supervisor" DBLinkTable="PERSONNEL" DBJoinOn="PERSONNEL.SUPERVISORID=PERSONNEL.ID"/>
+<Association Name="Worker_Team" DBLinkTable="MEMBERSHIP" DBJoinOn="PERSONNEL.ID=MEMBERSHIP.EMPLOYEE, WORKTEAM.TEAMNAME=MEMBERSHIP.TEAM"/>
+<Association Name="Customer_Order" DBLinkTable="CUSTORDER" DBJoinOn="CUSTORDER.CUSTOMERID=CUSTOMER.ID"/>
+<Association Name="Order_LineItems" DBLinkTable="LINEITEM" DBJoinOn="LINEITEM.ORDERNUMBER=CUSTORDER.ID"/>
+
+</Schema>
