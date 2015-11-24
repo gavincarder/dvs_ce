@@ -46,5 +46,5 @@ Please see LICENSE.txt or the Documentation for a full list of Licenses and ackn
 
 ## Making contributions
 
-A this code base is published on the public GitHub at https://github.com/DevTestSolutions/dvs_ce
+This code base is published on the public GitHub at https://github.com/DevTestSolutions/dvs_ce
 
