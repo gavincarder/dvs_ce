@@ -17,7 +17,7 @@ README.txt contains the list of defects currently known.
 
 ## Pre-requisites
 
-The OData Virtual Services created run in a CA Service Virtualization (CA LISA) 7.5, or 8.0 Virtual Service Environment which have the ìCA Service Virtualization OData Extensionî installed.
+The OData Virtual Services created run in a CA Service Virtualization (CA LISA) 7.5, or 8.0 Virtual Service Environment which have the ‚ÄúCA Service Virtualization OData Extension‚Äù installed.
 
 DVS Eclipse plug-in requires Eclipse (surprise!), and has been tested using the Kepler distribution.
 
@@ -33,7 +33,7 @@ You must have a support.ca.com account to access this documentation.
 
 ## License 
  
-Contents of the OData Dynamic Virtualization Services project are released under the Eclipse Public License 1.0, with the exception of dvs.lisa-extensions.odata.jar, dvs.lisa-extensions.ddme.jar, and dvs.utilities.commonUtils.jar (the ìCA Service Virtualization OData Extensionî files) for which all rights are retained except as set forth below.   The ìCA Service Virtualization OData Extensionî files are not directly required by the OData Dynamic Virtualization Services project but are needed in order to run virtual services created from this project.  You are permitted to use the ìCA Service Virtualization OData Extensionî only for your internal use in conjunction with your authorized use of the CA Service Virtualization product.  CA provides the ìCA Service Virtualization OData Extensionî files without obligation of support and ìAS IS,î WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, WITHOUT LIMITATION, THE WARRANTY OF TITLE, NON-INFRINGEMENT OR NON-INTERFERENCE AND ANY IMPLIED WARRANTIES AND CONDITIONS OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+Contents of the OData Dynamic Virtualization Services project are released under the Eclipse Public License 1.0, with the exception of dvs.lisa-extensions.odata.jar, dvs.lisa-extensions.ddme.jar, and dvs.utilities.commonUtils.jar (the ‚ÄúCA Service Virtualization OData Extension‚Äù files) for which all rights are retained except as set forth below.   The ‚ÄúCA Service Virtualization OData Extension‚Äù files are not directly required by the OData Dynamic Virtualization Services project but are needed in order to run virtual services created from this project.  You are permitted to use the ‚ÄúCA Service Virtualization OData Extension‚Äù only for your internal use in conjunction with your authorized use of the CA Service Virtualization product.  CA provides the ‚ÄúCA Service Virtualization OData Extension‚Äù files without obligation of support and ‚ÄúAS IS,‚Äù WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, WITHOUT LIMITATION, THE WARRANTY OF TITLE, NON-INFRINGEMENT OR NON-INTERFERENCE AND ANY IMPLIED WARRANTIES AND CONDITIONS OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  
 Contents of the OData Dynamic Virtualization Services project that are being released under the Eclipse license will so indicate in their respective source code headers.
 
@@ -46,5 +46,5 @@ Please see LICENSE.txt or the Documentation for a full list of Licenses and ackn
 
 ## Making contributions
 
-Please see the instructions at https://github.com/CA-DevTest/ca-devtest.github.io
+A subset of this code base is published on the public GitHub at https://github.com/DevTestSolutions/dvs_ce
 
